@@ -3,7 +3,7 @@ exports.up = function (knex) {
     authorsTable.increments('author_id').primary();
     authorsTable.string('name').notNullable();
     authorsTable.string('description');
-    authorsTable.integer('recipe_count').notNullable().default(0);
+    authorsTable.integer('recipe_count').default(0);
   });
 };
 

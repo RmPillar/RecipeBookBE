@@ -1,6 +1,5 @@
 module.exports = [
   {
-    recipe_id: 1,
     author_id: 1,
     name: 'Doughnut Dough',
     description:
@@ -13,7 +12,6 @@ module.exports = [
     comment_count: 0,
   },
   {
-    recipe_id: 2,
     author_id: 1,
     name: 'Lemon Curd',
     description:

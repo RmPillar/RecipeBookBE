@@ -33,3 +33,22 @@ exports.sendRecipes = (newRecipe) => {
         });
     });
 };
+
+exports.fetchRecipe = (recipe_id) => {
+  return connection('recipes')
+    .where({ recipe_id })
+    .then((recipe) => {
+      if (recipe.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: 'Recipe Not Found',
+        });
+      } else {
+        return connection('recipes_categories')
+          .where({ recipe_id })
+          .then((data) => {
+            return { ...recipe[0], categories: data };
+          });
+      }
+    });
+};

@@ -2,7 +2,7 @@ module.exports = [
   {
     name: 'Sweet',
     slug: 'sweet',
-    recipe_count: 0,
+    recipe_count: 2,
   },
   {
     name: 'Savoury',

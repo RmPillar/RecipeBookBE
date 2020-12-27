@@ -14,7 +14,7 @@ after(() => connection.destroy());
 describe('app', () => {
   describe('/api', () => {
     describe('/recipes', () => {
-      describe.only('GET', () => {
+      describe('GET', () => {
         it('Status: 200 responds with all recipes in the database', () => {
           return request(app)
             .get('/api/recipes')
@@ -33,6 +33,75 @@ describe('app', () => {
                 'completion_count',
                 'comment_count'
               );
+            });
+        });
+      });
+      describe.only('POST', () => {
+        it('Status: 201 responds with the posted recipe', () => {
+          const recipe = {
+            name: 'Doughnut Dough',
+            author_id: 1,
+            description:
+              "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
+            quantity: 20,
+            unit: 'Doughnuts',
+            rating: 5,
+            categories: [{ category_id: 1 }, { category_id: 3 }],
+          };
+          return request(app)
+            .post('/api/recipes')
+            .send(recipe)
+            .expect(201)
+            .then(({ body: { recipe } }) => {
+              expect(recipe).to.deep.include({
+                name: 'Doughnut Dough',
+                description:
+                  "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
+                author_id: 1,
+                quantity: '20.00',
+                unit: 'Doughnuts',
+                rating: '5.00',
+                completion_count: 0,
+                comment_count: 0,
+              });
+            });
+        });
+        it('Status: 400 responds with Bad request when trying to insert non-existant column', () => {
+          const recipe = {
+            names: 'Doughnut Dough',
+            description:
+              "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
+            author_id: 1,
+            quantity: 20,
+            unit: 'Doughnuts',
+            rating: 5,
+            categories: [{ category_id: 1 }, { category_id: 6 }],
+          };
+
+          return request(app)
+            .post('/api/recipes')
+            .send(recipe)
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.deep.equal('Bad Request!!');
+            });
+        });
+        it('Status: 400 responds with Bad request when trying to a column is missing from recipe body', () => {
+          const recipe = {
+            description:
+              "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
+            author: 'Bread Ahead',
+            quantity: 20,
+            unit: 'Doughnuts',
+            rating: 5,
+          };
+
+          return request(app)
+            .post('/api/recipes')
+            .send(recipe)
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.deep.equal('Bad Request!!');
             });
         });
       });

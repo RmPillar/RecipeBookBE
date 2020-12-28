@@ -6,8 +6,9 @@ const {
   updateRecipe,
 } = require('../models/recipes');
 
-exports.getRecipes = (req, res, next) => {
-  fetchRecipes()
+exports.getRecipes = ({ query }, res, next) => {
+  const { sort_by = 'name', order = 'asc' } = query;
+  fetchRecipes(sort_by, order)
     .then((recipes) => {
       res.status(200).send({ recipes, count: recipes.length });
     })

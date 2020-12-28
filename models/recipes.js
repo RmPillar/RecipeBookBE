@@ -1,7 +1,7 @@
 const connection = require('../db/connection');
 
-exports.fetchRecipes = () => {
-  return connection('recipes');
+exports.fetchRecipes = (sort_by, order) => {
+  return connection('recipes').orderBy(sort_by, order);
 };
 
 exports.sendRecipes = (newRecipe) => {

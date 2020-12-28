@@ -14,7 +14,7 @@ after(() => connection.destroy());
 describe('app', () => {
   describe('/api', () => {
     describe('/recipes', () => {
-      describe('GET', () => {
+      describe.only('GET', () => {
         it('Status: 200 responds with all recipes in the database', () => {
           return request(app)
             .get('/api/recipes')
@@ -33,6 +33,36 @@ describe('app', () => {
                 'completion_count',
                 'comment_count'
               );
+            });
+        });
+        it('Status: 200 responds with all recipes in the database sorted by ascending A-Z by default', () => {
+          return request(app)
+            .get('/api/recipes')
+            .expect(200)
+            .then(({ body: { recipes } }) => {
+              expect(recipes).to.be.sortedBy('name', {
+                ascending: true,
+              });
+            });
+        });
+        it('Status: 200 responds with all recipes in the database sorted by descending A-Z by user query', () => {
+          return request(app)
+            .get('/api/recipes?sort_by=name&order=desc')
+            .expect(200)
+            .then(({ body: { recipes } }) => {
+              expect(recipes).to.be.sortedBy('name', {
+                descending: true,
+              });
+            });
+        });
+        it('Status: 200 responds with all recipes in the database sorted by time created by user query', () => {
+          return request(app)
+            .get('/api/recipes?sort_by=last_made')
+            .expect(200)
+            .then(({ body: { recipes } }) => {
+              expect(recipes).to.be.sortedBy('last_made', {
+                ascending: true,
+              });
             });
         });
       });
@@ -172,7 +202,7 @@ describe('app', () => {
               });
           });
         });
-        describe.only('PATCH', () => {
+        describe('PATCH', () => {
           it('Status: 200 responds with the updated recipe', () => {
             const updateRecipe = { rating: 3 };
             return request(app)

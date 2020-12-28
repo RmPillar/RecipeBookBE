@@ -231,7 +231,7 @@ describe('app', () => {
             });
         });
       });
-      describe.only('POST', () => {
+      describe('POST', () => {
         it('Status: 201 responds with the posted category', () => {
           const category = {
             slug: 'this_is_a_category',
@@ -272,6 +272,29 @@ describe('app', () => {
             .then(({ body: { msg } }) => {
               expect(msg).to.deep.equal('Bad Request!!');
             });
+        });
+      });
+      describe.only('/:category_id', () => {
+        describe('DELETE', () => {
+          it('Status: 204 no response when category is deleted', () => {
+            return request(app).delete('/api/categories/1').expect(204);
+          });
+          it('Status: 400 responds with Bad Request message', () => {
+            return request(app)
+              .delete('/api/categories/t')
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Bad Request!!');
+              });
+          });
+          it('Status: 404 responds with Category Not Found message when trying to delete category that does not exist', () => {
+            return request(app)
+              .delete('/api/categories/5000')
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Category Not Found');
+              });
+          });
         });
       });
     });

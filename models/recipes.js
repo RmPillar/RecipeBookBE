@@ -66,3 +66,18 @@ exports.removeRecipe = (recipe_id) => {
       }
     });
 };
+
+exports.updateRecipe = (recipe_id, body) => {
+  return connection('recipes')
+    .where({ recipe_id })
+    .update(body)
+    .returning('*')
+    .then((recipe) => {
+      if (recipe.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: 'Recipe Not Found',
+        });
+      } else return recipe[0];
+    });
+};

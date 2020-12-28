@@ -151,7 +151,7 @@ describe('app', () => {
               });
           });
         });
-        describe.only('DELETE', () => {
+        describe('DELETE', () => {
           it('Status: 204 no response when recipe is deleted', () => {
             return request(app).delete('/api/recipes/1').expect(204);
           });
@@ -166,6 +166,28 @@ describe('app', () => {
           it('Status: 404 responds with Recipe Not Found message when trying to delete recipe that does not exist', () => {
             return request(app)
               .delete('/api/recipes/5000')
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Recipe Not Found');
+              });
+          });
+        });
+        describe.only('PATCH', () => {
+          it('Status: 200 responds with the updated recipe', () => {
+            const updateRecipe = { rating: 3 };
+            return request(app)
+              .patch('/api/recipes/1')
+              .send(updateRecipe)
+              .expect(200)
+              .then(({ body: { recipe } }) => {
+                expect(recipe.rating).to.equal('3.00');
+              });
+          });
+          it('Status: 404 responds with recipe not found message', () => {
+            const updateRecipe = { rating: 3 };
+            return request(app)
+              .patch('/api/recipes/5000')
+              .send(updateRecipe)
               .expect(404)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Recipe Not Found');

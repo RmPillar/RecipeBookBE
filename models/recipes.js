@@ -1,9 +1,36 @@
 const connection = require('../db/connection');
 
-exports.fetchRecipes = (sort_by, order, p, limit) => {
+exports.fetchRecipes = (sort_by, order, p, limit, category) => {
   return connection('recipes')
+    .modify((query) => {
+      if (category)
+        query.whereIn(
+          'recipe_id',
+          connection('recipes_categories')
+            .select('recipe_id')
+            .where('category_id', category)
+        );
+    })
     .orderBy(sort_by, order)
-    .limit(limit * p);
+    .limit(limit * p)
+    .then((recipes) => {
+      const promises = recipes.map((recipe) => {
+        return connection('categories').whereIn(
+          'category_id',
+          connection('recipes_categories')
+            .select('category_id')
+            .where('recipe_id', recipe.recipe_id)
+        );
+      });
+      return Promise.all(promises).then((data) => {
+        return recipes.map((recipe, i) => {
+          return {
+            ...recipe,
+            categories: [...data[i]],
+          };
+        });
+      });
+    });
 };
 
 exports.sendRecipes = (newRecipe) => {
@@ -33,25 +60,6 @@ exports.sendRecipes = (newRecipe) => {
         .then((data) => {
           return { ...recipe, categories: data };
         });
-    });
-};
-
-exports.fetchRecipe = (recipe_id) => {
-  return connection('recipes')
-    .where({ recipe_id })
-    .then((recipe) => {
-      if (recipe.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: 'Recipe Not Found',
-        });
-      } else {
-        return connection('recipes_categories')
-          .where({ recipe_id })
-          .then((data) => {
-            return { ...recipe[0], categories: data };
-          });
-      }
     });
 };
 

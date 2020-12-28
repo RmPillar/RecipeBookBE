@@ -52,3 +52,17 @@ exports.fetchRecipe = (recipe_id) => {
       }
     });
 };
+
+exports.removeRecipe = (recipe_id) => {
+  return connection('recipes')
+    .where({ recipe_id })
+    .del()
+    .then((delCount) => {
+      if (!delCount) {
+        return Promise.reject({
+          status: 404,
+          msg: 'Recipe Not Found',
+        });
+      }
+    });
+};

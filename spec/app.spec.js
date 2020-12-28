@@ -213,6 +213,43 @@ describe('app', () => {
               });
           });
         });
+        describe.only('/instructions', () => {
+          describe('GET', () => {
+            it('Status: 200 responds with all instructions for the requested recipe', () => {
+              return request(app)
+                .get('/api/recipes/1/instructions')
+                .expect(200)
+                .then(({ body: { instructions } }) => {
+                  expect(instructions).to.be.an('array');
+                  expect(instructions[0]).to.include.keys(
+                    'instruction_id',
+                    'recipe_id',
+                    'body',
+                    'comment_count'
+                  );
+                  expect(instructions).to.be.sortedBy('index', {
+                    ascending: true,
+                  });
+                });
+            });
+            it('Status: 404 responds with Recipe Not Found message when trying to get instructions for a recipe that does not exist', () => {
+              return request(app)
+                .get('/api/recipes/5000/instructions')
+                .expect(404)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Recipe Not Found');
+                });
+            });
+            it('Status: 400 responds with Bad Request message', () => {
+              return request(app)
+                .get('/api/recipes/t/instructions')
+                .expect(400)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Bad Request!!');
+                });
+            });
+          });
+        });
       });
     });
     describe('/categories', () => {
@@ -274,7 +311,7 @@ describe('app', () => {
             });
         });
       });
-      describe.only('/:category_id', () => {
+      describe('/:category_id', () => {
         describe('DELETE', () => {
           it('Status: 204 no response when category is deleted', () => {
             return request(app).delete('/api/categories/1').expect(204);

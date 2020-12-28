@@ -93,3 +93,17 @@ exports.updateRecipe = (recipe_id, body) => {
       } else return recipe[0];
     });
 };
+
+exports.fetchRecipeInstructions = (recipe_id) => {
+  return connection('instructions')
+    .where({ recipe_id })
+    .orderBy('index', 'asc')
+    .then((instructions) => {
+      if (instructions.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: 'Recipe Not Found',
+        });
+      } else return instructions;
+    });
+};

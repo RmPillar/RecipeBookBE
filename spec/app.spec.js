@@ -14,7 +14,7 @@ after(() => connection.destroy());
 describe('app', () => {
   describe('/api', () => {
     describe('/recipes', () => {
-      describe.only('GET', () => {
+      describe('GET', () => {
         it('Status: 200 responds with all recipes in the database', () => {
           return request(app)
             .get('/api/recipes')
@@ -212,6 +212,23 @@ describe('app', () => {
                 expect(msg).to.deep.equal('Recipe Not Found');
               });
           });
+        });
+      });
+    });
+    describe('/categories', () => {
+      describe.only('GET', () => {
+        it('Status: 200 responds with all categories in the database', () => {
+          return request(app)
+            .get('/api/categories')
+            .expect(200)
+            .then(({ body: { categories } }) => {
+              expect(categories).to.be.an('array');
+              expect(categories[0]).to.include.keys(
+                'name',
+                'slug',
+                'recipe_count'
+              );
+            });
         });
       });
     });

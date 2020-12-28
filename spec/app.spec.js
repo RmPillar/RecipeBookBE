@@ -65,6 +65,14 @@ describe('app', () => {
               });
             });
         });
+        it('Status: 200 responds with the first 10 recipes in the database', () => {
+          return request(app)
+            .get('/api/recipes?sort_by=last_made')
+            .expect(200)
+            .then(({ body: { recipes } }) => {
+              expect(recipes).to.have.lengthOf.lessThan(11);
+            });
+        });
       });
       describe('POST', () => {
         it('Status: 201 responds with the posted recipe', () => {

@@ -1,7 +1,9 @@
 const connection = require('../db/connection');
 
-exports.fetchRecipes = (sort_by, order) => {
-  return connection('recipes').orderBy(sort_by, order);
+exports.fetchRecipes = (sort_by, order, p, limit) => {
+  return connection('recipes')
+    .orderBy(sort_by, order)
+    .limit(limit * p);
 };
 
 exports.sendRecipes = (newRecipe) => {

@@ -7,8 +7,8 @@ const {
 } = require('../models/recipes');
 
 exports.getRecipes = ({ query }, res, next) => {
-  const { sort_by = 'name', order = 'asc' } = query;
-  fetchRecipes(sort_by, order)
+  const { sort_by = 'name', order = 'asc', p = 1, limit = 10 } = query;
+  fetchRecipes(sort_by, order, p, limit)
     .then((recipes) => {
       res.status(200).send({ recipes, count: recipes.length });
     })

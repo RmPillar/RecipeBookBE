@@ -13,7 +13,8 @@ exports.fetchRecipes = (sort_by, order, p, limit, category, author) => {
       if (author) query.where('recipes.author_id', author);
     })
     .orderBy(sort_by, order)
-    .limit(limit * p)
+    .limit(limit)
+    .offset(p * limit - limit)
     .then((recipes) => {
       const promises = recipes.map((recipe) => {
         return connection('categories').whereIn(

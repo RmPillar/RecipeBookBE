@@ -1,6 +1,6 @@
 const connection = require('../db/connection');
 
-exports.fetchRecipes = (sort_by, order, p, limit, category) => {
+exports.fetchRecipes = (sort_by, order, p, limit, category, author) => {
   return connection('recipes')
     .modify((query) => {
       if (category)
@@ -10,6 +10,7 @@ exports.fetchRecipes = (sort_by, order, p, limit, category) => {
             .select('recipe_id')
             .where('category_id', category)
         );
+      if (author) query.where('recipes.author_id', author);
     })
     .orderBy(sort_by, order)
     .limit(limit * p)

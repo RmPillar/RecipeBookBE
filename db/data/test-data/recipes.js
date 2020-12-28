@@ -11,7 +11,7 @@ module.exports = [
     comment_count: 0,
   },
   {
-    author_id: 1,
+    author_id: 2,
     name: 'Lemon Curd',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',

@@ -91,6 +91,14 @@ describe('app', () => {
               expect(categories).to.include('doughnuts');
             });
         });
+        it('Status: 200 responds the first 10 recipes in a certain author', () => {
+          return request(app)
+            .get('/api/recipes?author=1')
+            .expect(200)
+            .then(({ body: { recipes } }) => {
+              expect(recipes[0].author_id).to.equal(1);
+            });
+        });
       });
       describe('POST', () => {
         it('Status: 201 responds with the posted recipe', () => {

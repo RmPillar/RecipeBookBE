@@ -216,7 +216,7 @@ describe('app', () => {
       });
     });
     describe('/categories', () => {
-      describe.only('GET', () => {
+      describe('GET', () => {
         it('Status: 200 responds with all categories in the database', () => {
           return request(app)
             .get('/api/categories')
@@ -228,6 +228,49 @@ describe('app', () => {
                 'slug',
                 'recipe_count'
               );
+            });
+        });
+      });
+      describe.only('POST', () => {
+        it('Status: 201 responds with the posted category', () => {
+          const category = {
+            slug: 'this_is_a_category',
+            name: 'This is a category',
+          };
+          return request(app)
+            .post('/api/categories')
+            .send(category)
+            .expect(201)
+            .then(({ body: { category } }) => {
+              expect(category).to.deep.include({
+                slug: 'this_is_a_category',
+                name: 'This is a category',
+              });
+            });
+        });
+        it('Status: 400 responds with Bad request when trying to insert non-existant column', () => {
+          const category = {
+            slug1: 'this_is_a_category',
+            name: 'This is a category',
+          };
+          return request(app)
+            .post('/api/categories')
+            .send(category)
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.deep.equal('Bad Request!!');
+            });
+        });
+        it('Status: 400 responds with Bad request when trying to a column is missing from comment body', () => {
+          const category = {
+            slug: 'this_is_a_category',
+          };
+          return request(app)
+            .post('/api/categories')
+            .send(category)
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.deep.equal('Bad Request!!');
             });
         });
       });

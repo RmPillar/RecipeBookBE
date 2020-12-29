@@ -4,6 +4,7 @@ const {
   removeRecipe,
   updateRecipe,
   fetchRecipeInstructions,
+  updateRecipeInstructions,
 } = require('../models/recipes');
 
 exports.getRecipes = ({ query }, res, next) => {
@@ -48,6 +49,14 @@ exports.patchRecipe = ({ params, body }, res, next) => {
 
 exports.getRecipeInstructions = ({ params }, res, next) => {
   fetchRecipeInstructions(params.recipe_id)
+    .then((instructions) => {
+      res.status(200).send({ instructions });
+    })
+    .catch(next);
+};
+
+exports.patchRecipeInstructions = ({ params, body }, res, next) => {
+  updateRecipeInstructions(params.recipe_id, body)
     .then((instructions) => {
       res.status(200).send({ instructions });
     })

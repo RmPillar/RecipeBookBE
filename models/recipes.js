@@ -45,22 +45,47 @@ exports.sendRecipes = (newRecipe) => {
     rating: newRecipe.rating,
   };
 
+  const instructions = newRecipe.instructions;
+  const ingredients = newRecipe.ingredients;
+
   const categories = newRecipe.categories;
   return connection('recipes')
     .insert(recipe)
     .returning('*')
     .then(([recipe]) => {
-      const recipeCategories = categories.map((category) => {
-        return {
-          category_id: category.category_id,
-          recipe_id: recipe.recipe_id,
-        };
-      });
+      const recipeCategories = categories.map((category) => ({
+        category_id: category.category_id,
+        recipe_id: recipe.recipe_id,
+      }));
       return connection('recipes_categories')
         .insert(recipeCategories)
         .returning('*')
-        .then((data) => {
-          return { ...recipe, categories: data };
+        .then((categories) => {
+          return { ...recipe, categories };
+        })
+        .then((recipeWithCategories) => {
+          const recipeInstructions = instructions.map((instruction) => ({
+            recipe_id: recipe.recipe_id,
+            ...instruction,
+          }));
+          return connection('instructions')
+            .insert(recipeInstructions)
+            .returning('*')
+            .then((instructions) => {
+              return { ...recipeWithCategories, instructions };
+            })
+            .then((recipeWithInstructions) => {
+              const recipeIngredients = ingredients.map((ingredient) => ({
+                recipe_id: recipe.recipe_id,
+                ...ingredient,
+              }));
+              return connection('ingredients')
+                .insert(recipeIngredients)
+                .returning('*')
+                .then((ingredients) => {
+                  return { ...recipeWithInstructions, ingredients };
+                });
+            });
         });
     });
 };
@@ -105,5 +130,20 @@ exports.fetchRecipeInstructions = (recipe_id) => {
           msg: 'Recipe Not Found',
         });
       } else return instructions;
+    });
+};
+
+exports.updateRecipeInstructions = (recipe_id, { body, index }) => {
+  return connection('instructions')
+    .where({ recipe_id, index })
+    .update({ body })
+    .returning('*')
+    .then((instructions) => {
+      if (instructions.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: 'Recipe Not Found',
+        });
+      } else return instructions[0];
     });
 };

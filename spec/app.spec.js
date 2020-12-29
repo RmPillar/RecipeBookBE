@@ -99,9 +99,17 @@ describe('app', () => {
               expect(recipes[0].author_id).to.equal(1);
             });
         });
+        it('Status: 400 responds with bad request when sort_by query has a non-existant column', () => {
+          return request(app)
+            .get('/api/recipes?sort_by=voted')
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal('Bad Request!!');
+            });
+        });
       });
       describe('POST', () => {
-        it('Status: 201 responds with the posted recipe', () => {
+        it.only('Status: 201 responds with the posted recipe', () => {
           const recipe = {
             name: 'Doughnut Dough',
             author_id: 1,
@@ -111,6 +119,43 @@ describe('app', () => {
             unit: 'Doughnuts',
             rating: 5,
             categories: [{ category_id: 1 }, { category_id: 3 }],
+            instructions: [
+              {
+                index: 0,
+                body:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                comment_count: 0,
+              },
+              {
+                index: 1,
+                body:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                comment_count: 0,
+              },
+              {
+                index: 2,
+                body:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                comment_count: 0,
+              },
+            ],
+            ingredients: [
+              {
+                name: 'Strong White Bread Flour',
+                quantity: 500,
+                unit: 'g',
+              },
+              {
+                name: 'Caster Sugar',
+                quantity: 60,
+                unit: 'g',
+              },
+              {
+                name: 'Dried Yeast',
+                quantity: 8,
+                unit: 'g',
+              },
+            ],
           };
           return request(app)
             .post('/api/recipes')
@@ -127,6 +172,59 @@ describe('app', () => {
                 rating: '5.00',
                 completion_count: 0,
                 comment_count: 0,
+                categories: [
+                  { recipes_category_id: 4, category_id: 1, recipe_id: 3 },
+                  { recipes_category_id: 5, category_id: 3, recipe_id: 3 },
+                ],
+                instructions: [
+                  {
+                    instruction_id: 7,
+                    recipe_id: 3,
+                    body:
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                    index: 0,
+                    comment_count: 0,
+                  },
+                  {
+                    instruction_id: 8,
+                    recipe_id: 3,
+                    body:
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                    index: 1,
+                    comment_count: 0,
+                  },
+                  {
+                    instruction_id: 9,
+                    recipe_id: 3,
+                    body:
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                    index: 2,
+                    comment_count: 0,
+                  },
+                ],
+                ingredients: [
+                  {
+                    ingredient_id: 15,
+                    recipe_id: 3,
+                    name: 'Strong White Bread Flour',
+                    quantity: '500.00000',
+                    unit: 'g',
+                  },
+                  {
+                    ingredient_id: 16,
+                    recipe_id: 3,
+                    name: 'Caster Sugar',
+                    quantity: '60.00000',
+                    unit: 'g',
+                  },
+                  {
+                    ingredient_id: 17,
+                    recipe_id: 3,
+                    name: 'Dried Yeast',
+                    quantity: '8.00000',
+                    unit: 'g',
+                  },
+                ],
               });
             });
         });
@@ -213,7 +311,7 @@ describe('app', () => {
               });
           });
         });
-        describe.only('/instructions', () => {
+        describe('/instructions', () => {
           describe('GET', () => {
             it('Status: 200 responds with all instructions for the requested recipe', () => {
               return request(app)
@@ -246,6 +344,38 @@ describe('app', () => {
                 .expect(400)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Bad Request!!');
+                });
+            });
+          });
+          describe('PATCH', () => {
+            it('Status: 200 responds with the updated instruction', () => {
+              const updatedInstruction = {
+                index: 1,
+                body:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+              };
+              return request(app)
+                .patch('/api/recipes/1/instructions')
+                .send(updatedInstruction)
+                .expect(200)
+                .then(({ body: { instructions } }) => {
+                  expect(instructions.body).to.equal(
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+                  );
+                });
+            });
+            it('Status: 404 responds with recipe not found message', () => {
+              const updatedInstruction = {
+                index: 1,
+                body:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+              };
+              return request(app)
+                .patch('/api/recipes/5000/instructions')
+                .send(updatedInstruction)
+                .expect(404)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Recipe Not Found');
                 });
             });
           });

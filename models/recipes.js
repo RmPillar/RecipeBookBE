@@ -124,32 +124,3 @@ exports.fetchRecipeInstructions = (recipe_id) => {
       } else return instructions;
     });
 };
-
-exports.updateRecipeInstructions = (recipe_id, { body, index }) => {
-  return connection('instructions')
-    .where({ recipe_id, index })
-    .update({ body })
-    .returning('*')
-    .then((instructions) => {
-      if (instructions.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: 'Recipe Not Found',
-        });
-      } else return instructions[0];
-    });
-};
-
-exports.removeRecipeInstruction = (recipe_id, { index }) => {
-  return connection('instructions')
-    .where({ recipe_id, index })
-    .del()
-    .then((delCount) => {
-      if (!delCount) {
-        return Promise.reject({
-          status: 404,
-          msg: 'Instruction Not Found',
-        });
-      }
-    });
-};

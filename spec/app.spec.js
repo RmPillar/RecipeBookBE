@@ -31,7 +31,8 @@ describe('app', () => {
                 'last_made',
                 'rating',
                 'completion_count',
-                'comment_count'
+                'comment_count',
+                'categories'
               );
               expect(recipes[0].categories).to.be.an('array');
               expect(recipes[0].categories[0]).to.include.keys(
@@ -109,7 +110,7 @@ describe('app', () => {
         });
       });
       describe('POST', () => {
-        it.only('Status: 201 responds with the posted recipe', () => {
+        it('Status: 201 responds with the posted recipe', () => {
           const recipe = {
             name: 'Doughnut Dough',
             author_id: 1,
@@ -347,96 +348,60 @@ describe('app', () => {
                 });
             });
           });
-          describe('PATCH', () => {
-            it('Status: 200 responds with the updated instruction', () => {
-              const updatedInstruction = {
-                index: 1,
-                body:
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-              };
-              return request(app)
-                .del('/api/recipes/1/instructions')
-                .send(updatedInstruction)
-                .expect(200)
-                .then(({ body: { instructions } }) => {
-                  expect(instructions.body).to.equal(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-                  );
-                });
-            });
-            it('Status: 404 responds with recipe not found message', () => {
-              const updatedInstruction = {
-                index: 1,
-                body:
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-              };
-              return request(app)
-                .patch('/api/recipes/5000/instructions')
-                .send(updatedInstruction)
-                .expect(404)
-                .then(({ body: { msg } }) => {
-                  expect(msg).to.deep.equal('Recipe Not Found');
-                });
-            });
+        });
+      });
+    });
+    describe.only('/instructions', () => {
+      describe('/:instruction_id', () => {
+        describe('PATCH', () => {
+          it('Status: 200 responds with the updated instruction', () => {
+            const updatedInstruction = {
+              body:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            };
+            return request(app)
+              .patch('/api/instructions/1')
+              .send(updatedInstruction)
+              .expect(200)
+              .then(({ body: { instruction } }) => {
+                expect(instruction.body).to.equal(
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+                );
+              });
           });
-          describe('DELETE', () => {
-            it('Status: 204 no response when instruction is deleted', () => {
-              const instructionToDelete = {
-                index: 1,
-              };
-              return request(app)
-                .delete('/api/recipes/1/instructions')
-                .send(instructionToDelete)
-                .expect(204);
-            });
-            it('Status: 400 responds with Bad Request message', () => {
-              const instructionToDelete = {
-                index: 1,
-              };
-              return request(app)
-                .delete('/api/recipes/t/instructions')
-                .send(instructionToDelete)
-                .expect(400)
-                .then(({ body: { msg } }) => {
-                  expect(msg).to.deep.equal('Bad Request!!');
-                });
-            });
-            it('Status: 404 responds with Instruction Not Found message when trying to delete instruction that does not exist', () => {
-              const instructionToDelete = {
-                index: 1,
-              };
-              return request(app)
-                .delete('/api/recipes/5000/instructions')
-                .send(instructionToDelete)
-                .expect(404)
-                .then(({ body: { msg } }) => {
-                  expect(msg).to.deep.equal('Instruction Not Found');
-                });
-            });
-            it('Status: 404 responds with Instruction Not Found message when trying to delete instruction that does not exist', () => {
-              const instructionToDelete = {
-                index: 9999,
-              };
-              return request(app)
-                .delete('/api/recipes/1/instructions')
-                .send(instructionToDelete)
-                .expect(404)
-                .then(({ body: { msg } }) => {
-                  expect(msg).to.deep.equal('Instruction Not Found');
-                });
-            });
-            it('Status: 400 responds with Bad Request message', () => {
-              const instructionToDelete = {
-                index: 't',
-              };
-              return request(app)
-                .delete('/api/recipes/1/instructions')
-                .send(instructionToDelete)
-                .expect(400)
-                .then(({ body: { msg } }) => {
-                  expect(msg).to.deep.equal('Bad Request!!');
-                });
-            });
+          it('Status: 404 responds with recipe not found message', () => {
+            const updatedInstruction = {
+              body:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            };
+            return request(app)
+              .patch('/api/instructions/5000')
+              .send(updatedInstruction)
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Recipe Not Found');
+              });
+          });
+        });
+        describe('DELETE', () => {
+          it('Status: 204 no response when instruction is deleted', () => {
+            return request(app).delete('/api/instructions/1').expect(204);
+          });
+          it('Status: 400 responds with Bad Request message', () => {
+            return request(app)
+              .delete('/api/instructions/t')
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Bad Request!!');
+              });
+          });
+          it('Status: 404 responds with Instruction Not Found message when trying to delete instruction that does not exist', () => {
+            return request(app)
+              .delete('/api/instructions/5000')
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Instruction Not Found');
+              });
           });
         });
       });

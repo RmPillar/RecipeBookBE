@@ -5,18 +5,12 @@ const {
   deleteRecipe,
   patchRecipe,
   getRecipeInstructions,
-  patchRecipeInstructions,
-  deleteRecipeInstruction,
 } = require('../controllers/recipes');
 
 recipeRouter.route('/').get(getRecipes).post(postRecipes);
 
 recipeRouter.route('/:recipe_id').delete(deleteRecipe).patch(patchRecipe);
 
-recipeRouter
-  .route('/:recipe_id/instructions')
-  .get(getRecipeInstructions)
-  .patch(patchRecipeInstructions)
-  .delete(deleteRecipeInstruction);
+recipeRouter.route('/:recipe_id/instructions').get(getRecipeInstructions);
 
 module.exports = recipeRouter;

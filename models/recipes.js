@@ -124,3 +124,17 @@ exports.fetchRecipeInstructions = (recipe_id) => {
       } else return instructions;
     });
 };
+
+exports.fetchRecipeIngredients = (recipe_id) => {
+  return connection('ingredients')
+    .where({ recipe_id })
+    .orderBy('index', 'asc')
+    .then((ingredients) => {
+      if (ingredients.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: 'Recipe Not Found',
+        });
+      } else return ingredients;
+    });
+};

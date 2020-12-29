@@ -349,9 +349,48 @@ describe('app', () => {
             });
           });
         });
+        describe.only('/ingredients', () => {
+          describe('GET', () => {
+            it('Status: 200 responds with all ingredients for the requested recipe', () => {
+              return request(app)
+                .get('/api/recipes/1/ingredients')
+                .expect(200)
+                .then(({ body: { ingredients } }) => {
+                  expect(ingredients).to.be.an('array');
+                  expect(ingredients[0]).to.include.keys(
+                    'ingredient_id',
+                    'recipe_id',
+                    'name',
+                    'quantity',
+                    'unit',
+                    'index'
+                  );
+                  expect(ingredients).to.be.sortedBy('index', {
+                    ascending: true,
+                  });
+                });
+            });
+            it('Status: 404 responds with Recipe Not Found message when trying to get ingredients for a recipe that does not exist', () => {
+              return request(app)
+                .get('/api/recipes/5000/ingredients')
+                .expect(404)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Recipe Not Found');
+                });
+            });
+            it('Status: 400 responds with Bad Request message', () => {
+              return request(app)
+                .get('/api/recipes/t/ingredients')
+                .expect(400)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Bad Request!!');
+                });
+            });
+          });
+        });
       });
     });
-    describe.only('/instructions', () => {
+    describe('/instructions', () => {
       describe('/:instruction_id', () => {
         describe('PATCH', () => {
           it('Status: 200 responds with the updated instruction', () => {

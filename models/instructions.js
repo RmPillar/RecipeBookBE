@@ -9,7 +9,7 @@ exports.updateInstruction = (instruction_id, { body }) => {
       if (instruction.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: 'Recipe Not Found',
+          msg: 'Instruction Not Found',
         });
       } else return instruction[0];
     });

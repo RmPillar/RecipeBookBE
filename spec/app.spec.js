@@ -142,16 +142,19 @@ describe('app', () => {
             ],
             ingredients: [
               {
+                index: 0,
                 name: 'Strong White Bread Flour',
                 quantity: 500,
                 unit: 'g',
               },
               {
+                index: 1,
                 name: 'Caster Sugar',
                 quantity: 60,
                 unit: 'g',
               },
               {
+                index: 2,
                 name: 'Dried Yeast',
                 quantity: 8,
                 unit: 'g',
@@ -207,6 +210,7 @@ describe('app', () => {
                   {
                     ingredient_id: 15,
                     recipe_id: 3,
+                    index: 0,
                     name: 'Strong White Bread Flour',
                     quantity: '500.00000',
                     unit: 'g',
@@ -214,6 +218,7 @@ describe('app', () => {
                   {
                     ingredient_id: 16,
                     recipe_id: 3,
+                    index: 1,
                     name: 'Caster Sugar',
                     quantity: '60.00000',
                     unit: 'g',
@@ -221,6 +226,7 @@ describe('app', () => {
                   {
                     ingredient_id: 17,
                     recipe_id: 3,
+                    index: 2,
                     name: 'Dried Yeast',
                     quantity: '8.00000',
                     unit: 'g',
@@ -349,7 +355,7 @@ describe('app', () => {
             });
           });
         });
-        describe.only('/ingredients', () => {
+        describe('/ingredients', () => {
           describe('GET', () => {
             it('Status: 200 responds with all ingredients for the requested recipe', () => {
               return request(app)
@@ -408,7 +414,7 @@ describe('app', () => {
                 );
               });
           });
-          it('Status: 404 responds with recipe not found message', () => {
+          it('Status: 404 responds with ingredient not found message', () => {
             const updatedInstruction = {
               body:
                 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
@@ -418,7 +424,7 @@ describe('app', () => {
               .send(updatedInstruction)
               .expect(404)
               .then(({ body: { msg } }) => {
-                expect(msg).to.deep.equal('Recipe Not Found');
+                expect(msg).to.deep.equal('Instruction Not Found');
               });
           });
         });
@@ -440,6 +446,57 @@ describe('app', () => {
               .expect(404)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Instruction Not Found');
+              });
+          });
+        });
+      });
+    });
+    describe('/ingredients', () => {
+      describe('/:ingredient_id', () => {
+        describe('PATCH', () => {
+          it('Status: 200 responds with the updated ingredient', () => {
+            const updatedIngredient = {
+              quantity: 5,
+            };
+            return request(app)
+              .patch('/api/ingredients/1')
+              .send(updatedIngredient)
+              .expect(200)
+              .then(({ body: { ingredient } }) => {
+                expect(ingredient.quantity).to.equal('5.00000');
+              });
+          });
+          it('Status: 404 responds with Ingredient not found message', () => {
+            const updatedIngredient = {
+              quantity: 5,
+            };
+            return request(app)
+              .patch('/api/ingredients/5000')
+              .send(updatedIngredient)
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Ingredient Not Found');
+              });
+          });
+        });
+        describe('DELETE', () => {
+          it('Status: 204 no response when ingredient is deleted', () => {
+            return request(app).delete('/api/ingredients/1').expect(204);
+          });
+          it('Status: 400 responds with Bad Request message', () => {
+            return request(app)
+              .delete('/api/ingredients/t')
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Bad Request!!');
+              });
+          });
+          it('Status: 404 responds with Ingredient Not Found message when trying to delete ingredient that does not exist', () => {
+            return request(app)
+              .delete('/api/ingredients/5000')
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Ingredient Not Found');
               });
           });
         });

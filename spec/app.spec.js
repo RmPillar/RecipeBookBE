@@ -109,7 +109,7 @@ describe('app', () => {
         });
       });
       describe('POST', () => {
-        it('Status: 201 responds with the posted recipe', () => {
+        it.only('Status: 201 responds with the posted recipe', () => {
           const recipe = {
             name: 'Doughnut Dough',
             author_id: 1,
@@ -379,7 +379,7 @@ describe('app', () => {
                 });
             });
           });
-          describe.only('DELETE', () => {
+          describe('DELETE', () => {
             it('Status: 204 no response when instruction is deleted', () => {
               const instructionToDelete = {
                 index: 1,

@@ -35,8 +35,8 @@ exports.fetchRecipes = (sort_by, order, p, limit, category, author) => {
     });
 };
 
-exports.sendRecipes = (newRecipe) => {
-  const recipe = {
+exports.sendRecipes = async (newRecipe) => {
+  const recipeData = {
     name: newRecipe.name,
     description: newRecipe.description,
     author_id: newRecipe.author_id,
@@ -44,50 +44,42 @@ exports.sendRecipes = (newRecipe) => {
     unit: newRecipe.unit,
     rating: newRecipe.rating,
   };
+  const instructionsData = newRecipe.instructions;
+  const ingredientsData = newRecipe.ingredients;
+  const categoriesData = newRecipe.categories;
 
-  const instructions = newRecipe.instructions;
-  const ingredients = newRecipe.ingredients;
+  const [recipe] = await connection('recipes')
+    .insert(recipeData)
+    .returning('*');
 
-  const categories = newRecipe.categories;
-  return connection('recipes')
-    .insert(recipe)
-    .returning('*')
-    .then(([recipe]) => {
-      const recipeCategories = categories.map((category) => ({
-        category_id: category.category_id,
-        recipe_id: recipe.recipe_id,
-      }));
-      return connection('recipes_categories')
-        .insert(recipeCategories)
-        .returning('*')
-        .then((categories) => {
-          return { ...recipe, categories };
-        })
-        .then((recipeWithCategories) => {
-          const recipeInstructions = instructions.map((instruction) => ({
-            recipe_id: recipe.recipe_id,
-            ...instruction,
-          }));
-          return connection('instructions')
-            .insert(recipeInstructions)
-            .returning('*')
-            .then((instructions) => {
-              return { ...recipeWithCategories, instructions };
-            })
-            .then((recipeWithInstructions) => {
-              const recipeIngredients = ingredients.map((ingredient) => ({
-                recipe_id: recipe.recipe_id,
-                ...ingredient,
-              }));
-              return connection('ingredients')
-                .insert(recipeIngredients)
-                .returning('*')
-                .then((ingredients) => {
-                  return { ...recipeWithInstructions, ingredients };
-                });
-            });
-        });
-    });
+  const recipeCategories = categoriesData.map((category) => ({
+    category_id: category.category_id,
+    recipe_id: recipe.recipe_id,
+  }));
+
+  const recipeInstructions = instructionsData.map((instruction) => ({
+    recipe_id: recipe.recipe_id,
+    ...instruction,
+  }));
+
+  const recipeIngredients = ingredientsData.map((ingredient) => ({
+    recipe_id: recipe.recipe_id,
+    ...ingredient,
+  }));
+
+  const categories = await connection('recipes_categories')
+    .insert(recipeCategories)
+    .returning('*');
+
+  const instructions = await connection('instructions')
+    .insert(recipeInstructions)
+    .returning('*');
+
+  const ingredients = await connection('ingredients')
+    .insert(recipeIngredients)
+    .returning('*');
+
+  return { ...recipe, categories, instructions, ingredients };
 };
 
 exports.removeRecipe = (recipe_id) => {

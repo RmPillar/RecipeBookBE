@@ -147,3 +147,17 @@ exports.updateRecipeInstructions = (recipe_id, { body, index }) => {
       } else return instructions[0];
     });
 };
+
+exports.removeRecipeInstruction = (recipe_id, { index }) => {
+  return connection('instructions')
+    .where({ recipe_id, index })
+    .del()
+    .then((delCount) => {
+      if (!delCount) {
+        return Promise.reject({
+          status: 404,
+          msg: 'Instruction Not Found',
+        });
+      }
+    });
+};

@@ -1,7 +1,7 @@
 exports.up = function (knex) {
   return knex.schema.createTable('recipes', (recipesTable) => {
     recipesTable.increments('recipe_id').primary();
-    recipesTable.integer('author_id').references('authors.author_id');
+    recipesTable.integer('user_id').references('users.user_id');
     recipesTable.string('name').notNullable();
     recipesTable.text('description').notNullable();
     recipesTable.decimal('quantity').notNullable();

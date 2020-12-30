@@ -1,12 +1,12 @@
 exports.up = function (knex) {
-  return knex.schema.createTable('authors', (authorsTable) => {
-    authorsTable.increments('author_id').primary();
-    authorsTable.string('name').notNullable();
-    authorsTable.string('description');
-    authorsTable.integer('recipe_count').default(0);
+  return knex.schema.createTable('users', (usersTable) => {
+    usersTable.increments('user_id').primary();
+    usersTable.string('name').notNullable();
+    usersTable.string('description');
+    usersTable.integer('recipe_count').default(0);
   });
 };
 
 exports.down = function (knex) {
-  return knex.schema.dropTable('authors');
+  return knex.schema.dropTable('users');
 };

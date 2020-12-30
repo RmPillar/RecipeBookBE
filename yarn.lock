@@ -278,6 +278,11 @@ camelcase@^5.0.0, camelcase@^5.3.1:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.3.1.tgz#e3c9b31569e106811df242f715725a1f4c494320"
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
 
+chai-arrays@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/chai-arrays/-/chai-arrays-2.2.0.tgz#571479cbc5eca81605ed4eed1e8a2a28552d2a25"
+  integrity sha512-4awrdGI2EH8owJ9I58PXwG4N56/FiM8bsn4CVSNEgr4GKAM6Kq5JPVApUbhUBjDakbZNuRvV7quRSC38PWq/tg==
+
 chai-sorted@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/chai-sorted/-/chai-sorted-0.2.0.tgz#1fee8f07fef4b0043bdff9e07022a0812c12ef55"

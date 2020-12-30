@@ -1,6 +1,6 @@
 module.exports = [
   {
-    author_id: 1,
+    user_id: 1,
     name: 'Doughnut Dough',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
@@ -8,10 +8,10 @@ module.exports = [
     unit: 'Doughnuts',
     rating: 4,
     completion_count: 1,
-    comment_count: 0,
+    comment_count: 1,
   },
   {
-    author_id: 2,
+    user_id: 2,
     name: 'Lemon Curd',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
@@ -19,6 +19,6 @@ module.exports = [
     unit: 'Jars',
     rating: 3.8,
     completion_count: 2,
-    comment_count: 1,
+    comment_count: 0,
   },
 ];

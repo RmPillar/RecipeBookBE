@@ -2,8 +2,13 @@ process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
 const { expect } = chai;
+
 const chaiSorted = require('chai-sorted');
+const assertArrays = require('chai-arrays');
+
 chai.use(chaiSorted);
+chai.use(assertArrays);
+
 const request = require('supertest');
 const app = require('../app');
 const connection = require('../db/connection');
@@ -23,7 +28,7 @@ describe('app', () => {
               expect(recipes).to.be.an('array');
               expect(recipes[0]).to.include.keys(
                 'recipe_id',
-                'author_id',
+                'user_id',
                 'name',
                 'description',
                 'quantity',
@@ -92,12 +97,12 @@ describe('app', () => {
               expect(categories).to.include('doughnuts');
             });
         });
-        it('Status: 200 responds the first 10 recipes in a certain author', () => {
+        it('Status: 200 responds the first 10 recipes in a certain user', () => {
           return request(app)
-            .get('/api/recipes?author=1')
+            .get('/api/recipes?user=1')
             .expect(200)
             .then(({ body: { recipes } }) => {
-              expect(recipes[0].author_id).to.equal(1);
+              expect(recipes[0].user_id).to.equal(1);
             });
         });
         it('Status: 400 responds with bad request when sort_by query has a non-existant column', () => {
@@ -113,7 +118,7 @@ describe('app', () => {
         it('Status: 201 responds with the posted recipe', () => {
           const recipe = {
             name: 'Doughnut Dough',
-            author_id: 1,
+            user_id: 1,
             description:
               "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
             quantity: 20,
@@ -170,7 +175,7 @@ describe('app', () => {
                 name: 'Doughnut Dough',
                 description:
                   "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
-                author_id: 1,
+                user_id: 1,
                 quantity: '20.00',
                 unit: 'Doughnuts',
                 rating: '5.00',
@@ -240,7 +245,7 @@ describe('app', () => {
             names: 'Doughnut Dough',
             description:
               "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
-            author_id: 1,
+            user_id: 1,
             quantity: 20,
             unit: 'Doughnuts',
             rating: 5,
@@ -387,6 +392,44 @@ describe('app', () => {
             it('Status: 400 responds with Bad Request message', () => {
               return request(app)
                 .get('/api/recipes/t/ingredients')
+                .expect(400)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Bad Request!!');
+                });
+            });
+          });
+        });
+        describe.only('/comments', () => {
+          describe('GET', () => {
+            it('Status: 200 responds with all ingredients for the requested recipe', () => {
+              return request(app)
+                .get('/api/recipes/1/comments')
+                .expect(200)
+                .then(({ body: { comments } }) => {
+                  expect(comments).to.be.an('array');
+                  expect(comments[0]).to.include.keys(
+                    'recipe_id',
+                    'body',
+                    'date_posted',
+                    'user_id',
+                    'recipe_comment_id'
+                  );
+                  expect(comments).to.be.sortedBy('date_posted', {
+                    ascending: true,
+                  });
+                });
+            });
+            it('Status: 404 responds with Recipe Not Found message when trying to get ingredients for a recipe that does not exist', () => {
+              return request(app)
+                .get('/api/recipes/5000/comments')
+                .expect(404)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Recipe Not Found');
+                });
+            });
+            it('Status: 400 responds with Bad Request message', () => {
+              return request(app)
+                .get('/api/recipes/t/comments')
                 .expect(400)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Bad Request!!');

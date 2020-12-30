@@ -1,6 +1,6 @@
 const connection = require('../db/connection');
 
-exports.fetchRecipes = (sort_by, order, p, limit, category, author) => {
+exports.fetchRecipes = (sort_by, order, p, limit, category, user) => {
   return connection('recipes')
     .modify((query) => {
       if (category)
@@ -10,7 +10,7 @@ exports.fetchRecipes = (sort_by, order, p, limit, category, author) => {
             .select('recipe_id')
             .where('category_id', category)
         );
-      if (author) query.where('recipes.author_id', author);
+      if (user) query.where('recipes.user_id', user);
     })
     .orderBy(sort_by, order)
     .limit(limit)
@@ -39,7 +39,7 @@ exports.sendRecipes = async (newRecipe) => {
   const recipeData = {
     name: newRecipe.name,
     description: newRecipe.description,
-    author_id: newRecipe.author_id,
+    user_id: newRecipe.user_id,
     quantity: newRecipe.quantity,
     unit: newRecipe.unit,
     rating: newRecipe.rating,
@@ -136,5 +136,19 @@ exports.fetchRecipeIngredients = (recipe_id) => {
           msg: 'Recipe Not Found',
         });
       } else return ingredients;
+    });
+};
+
+exports.fetchRecipeComments = (recipe_id) => {
+  return connection('recipe-comments')
+    .where({ recipe_id })
+    .orderBy('date_posted', 'asc')
+    .then((comments) => {
+      if (comments.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: 'Recipe Not Found',
+        });
+      } else return comments;
     });
 };

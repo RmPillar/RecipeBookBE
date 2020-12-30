@@ -4,9 +4,8 @@ const {
   removeRecipe,
   updateRecipe,
   fetchRecipeInstructions,
-  updateRecipeInstructions,
-  removeRecipeInstruction,
   fetchRecipeIngredients,
+  fetchRecipeComments,
 } = require('../models/recipes');
 
 exports.getRecipes = ({ query }, res, next) => {
@@ -16,9 +15,9 @@ exports.getRecipes = ({ query }, res, next) => {
     p = 1,
     limit = 10,
     category = '',
-    author = '',
+    user = '',
   } = query;
-  fetchRecipes(sort_by, order, p, limit, category, author)
+  fetchRecipes(sort_by, order, p, limit, category, user)
     .then((recipes) => {
       res.status(200).send({ recipes, count: recipes.length });
     })
@@ -61,6 +60,14 @@ exports.getRecipeIngredients = ({ params }, res, next) => {
   fetchRecipeIngredients(params.recipe_id)
     .then((ingredients) => {
       res.status(200).send({ ingredients });
+    })
+    .catch(next);
+};
+
+exports.getRecipeComments = ({ params }, res, next) => {
+  fetchRecipeComments(params.recipe_id)
+    .then((comments) => {
+      res.status(200).send({ comments });
     })
     .catch(next);
 };

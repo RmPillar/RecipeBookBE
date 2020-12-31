@@ -6,6 +6,7 @@ const {
   categoriesData,
   recipesCategoriesData,
   recipeCommentsData,
+  instructionCommentsData,
 } = require('../data');
 
 exports.seed = function (knex) {
@@ -18,5 +19,6 @@ exports.seed = function (knex) {
     .then(() => knex('instructions').insert(instructionsData))
     .then(() => knex('categories').insert(categoriesData))
     .then(() => knex('recipes_categories').insert(recipesCategoriesData))
-    .then(() => knex('recipe-comments').insert(recipeCommentsData));
+    .then(() => knex('recipe-comments').insert(recipeCommentsData))
+    .then(() => knex('instruction-comments').insert(instructionCommentsData));
 };

@@ -734,5 +734,62 @@ describe('app', () => {
         });
       });
     });
+    describe.only('/instruction-comments', () => {
+      describe('/:comment_id', () => {
+        describe('DELETE', () => {
+          it('Status: 204 no response when a instruction comment is deleted', () => {
+            return request(app)
+              .delete('/api/instruction-comments/1')
+              .expect(204);
+          });
+          it('Status: 400 responds with Bad Request message', () => {
+            return request(app)
+              .delete('/api/instruction-comments/t')
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Bad Request!!');
+              });
+          });
+          it('Status: 404 responds with Comment Not Found message when trying to delete comment that does not exist', () => {
+            return request(app)
+              .delete('/api/instruction-comments/5000')
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Comment Not Found');
+              });
+          });
+        });
+        describe('PATCH', () => {
+          it('Status: 200 responds with the updated instruction', () => {
+            const updatedComment = {
+              body:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            };
+            return request(app)
+              .patch('/api/instruction-comments/1')
+              .send(updatedComment)
+              .expect(200)
+              .then(({ body: { comment } }) => {
+                expect(comment.body).to.equal(
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+                );
+              });
+          });
+          it('Status: 404 responds with comment not found message', () => {
+            const updatedComment = {
+              body:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            };
+            return request(app)
+              .patch('/api/instruction-comments/5000')
+              .send(updatedComment)
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Comment Not Found');
+              });
+          });
+        });
+      });
+    });
   });
 });

@@ -5,3 +5,4 @@ exports.instructionsData = require('./instructions');
 exports.categoriesData = require('./categories');
 exports.recipesCategoriesData = require('./recipe-categories');
 exports.recipeCommentsData = require('./recipe-comments');
+exports.instructionCommentsData = require('./instruction-comments');

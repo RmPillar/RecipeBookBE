@@ -124,6 +124,9 @@ describe('app', () => {
             quantity: 20,
             unit: 'Doughnuts',
             rating: 5,
+            duration: 3600,
+            difficulty: 'easy',
+            private: true,
             categories: [{ category_id: 1 }, { category_id: 3 }],
             instructions: [
               {

@@ -43,6 +43,9 @@ exports.sendRecipes = async (newRecipe) => {
     quantity: newRecipe.quantity,
     unit: newRecipe.unit,
     rating: newRecipe.rating,
+    duration: newRecipe.duration,
+    difficulty: newRecipe.difficulty,
+    private: newRecipe.private,
   };
   const instructionsData = newRecipe.instructions;
   const ingredientsData = newRecipe.ingredients;

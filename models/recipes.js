@@ -152,3 +152,18 @@ exports.fetchRecipeComments = (recipe_id) => {
       } else return comments;
     });
 };
+
+exports.sendRecipeComment = async (recipe_id, body) => {
+  const newComment = {
+    recipe_id,
+    ...body,
+  };
+
+  const [comment] = await connection('recipe-comments')
+    .insert(newComment)
+    .returning('*');
+
+  await connection('recipes').where({ recipe_id }).increment('comment_count');
+
+  return comment;
+};

@@ -6,6 +6,7 @@ const {
   fetchRecipeInstructions,
   fetchRecipeIngredients,
   fetchRecipeComments,
+  sendRecipeComment,
 } = require('../models/recipes');
 
 exports.getRecipes = ({ query }, res, next) => {
@@ -68,6 +69,14 @@ exports.getRecipeComments = ({ params }, res, next) => {
   fetchRecipeComments(params.recipe_id)
     .then((comments) => {
       res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.postRecipeComment = ({ params, body }, res, next) => {
+  sendRecipeComment(params.recipe_id, body)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch(next);
 };

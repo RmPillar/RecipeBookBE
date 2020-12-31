@@ -399,7 +399,7 @@ describe('app', () => {
             });
           });
         });
-        describe.only('/comments', () => {
+        describe('/comments', () => {
           describe('GET', () => {
             it('Status: 200 responds with all ingredients for the requested recipe', () => {
               return request(app)
@@ -430,6 +430,57 @@ describe('app', () => {
             it('Status: 400 responds with Bad Request message', () => {
               return request(app)
                 .get('/api/recipes/t/comments')
+                .expect(400)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Bad Request!!');
+                });
+            });
+          });
+          describe('POST', () => {
+            it('Status: 201 responds with the posted comment', () => {
+              const comment = {
+                user_id: 2,
+                date_posted: null,
+                body:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+              };
+              return request(app)
+                .post('/api/recipes/1/comments')
+                .send(comment)
+                .expect(201)
+                .then(({ body: { comment } }) => {
+                  expect(comment).to.deep.include({
+                    user_id: 2,
+                    body:
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                  });
+                });
+            });
+            it('Status: 400 responds with Bad request when trying to insert non-existant column', () => {
+              const comment = {
+                user: 2,
+                date_posted: null,
+                body:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+              };
+
+              return request(app)
+                .post('/api/recipes/1/comments')
+                .send(comment)
+                .expect(400)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Bad Request!!');
+                });
+            });
+            it('Status: 400 responds with Bad request when trying to a column is missing from comment body', () => {
+              const comment = {
+                user: 2,
+                date_posted: null,
+              };
+
+              return request(app)
+                .post('/api/recipes/1/comments')
+                .send(comment)
                 .expect(400)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Bad Request!!');
@@ -623,6 +674,61 @@ describe('app', () => {
               .expect(404)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Category Not Found');
+              });
+          });
+        });
+      });
+    });
+    describe('/recipe-comments', () => {
+      describe('/:comment_id', () => {
+        describe('DELETE', () => {
+          it('Status: 204 no response when a recipe comment is deleted', () => {
+            return request(app).delete('/api/recipe-comments/1').expect(204);
+          });
+          it('Status: 400 responds with Bad Request message', () => {
+            return request(app)
+              .delete('/api/recipe-comments/t')
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Bad Request!!');
+              });
+          });
+          it('Status: 404 responds with Comment Not Found message when trying to delete comment that does not exist', () => {
+            return request(app)
+              .delete('/api/recipe-comments/5000')
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Comment Not Found');
+              });
+          });
+        });
+        describe('PATCH', () => {
+          it('Status: 200 responds with the updated instruction', () => {
+            const updatedComment = {
+              body:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            };
+            return request(app)
+              .patch('/api/recipe-comments/1')
+              .send(updatedComment)
+              .expect(200)
+              .then(({ body: { comment } }) => {
+                expect(comment.body).to.equal(
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+                );
+              });
+          });
+          it('Status: 404 responds with comment not found message', () => {
+            const updatedComment = {
+              body:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            };
+            return request(app)
+              .patch('/api/recipe-comments/5000')
+              .send(updatedComment)
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Comment Not Found');
               });
           });
         });

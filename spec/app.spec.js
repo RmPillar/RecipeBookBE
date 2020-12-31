@@ -734,7 +734,7 @@ describe('app', () => {
         });
       });
     });
-    describe.only('/instruction-comments', () => {
+    describe('/instruction-comments', () => {
       describe('/:comment_id', () => {
         describe('DELETE', () => {
           it('Status: 204 no response when a instruction comment is deleted', () => {

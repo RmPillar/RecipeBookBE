@@ -1,17 +1,23 @@
 const connection = require('../db/connection');
 
-exports.removeRecipeComment = (recipe_comment_id) => {
-  return connection('recipe-comments')
+exports.removeRecipeComment = async (recipe_comment_id) => {
+  const comment = await connection('recipe-comments')
     .where({ recipe_comment_id })
     .del()
-    .then((delCount) => {
-      if (!delCount) {
-        return Promise.reject({
-          status: 404,
-          msg: 'Comment Not Found',
-        });
-      }
+    .returning('*');
+
+  if (comment.length === 0) {
+    return Promise.reject({
+      status: 404,
+      msg: 'Comment Not Found',
     });
+  } else {
+    await connection('recipes')
+      .where({
+        recipe_id: comment[0].recipe_id,
+      })
+      .decrement({ comment_count: 1 });
+  }
 };
 
 exports.updateRecipeComment = (recipe_comment_id, { body }) => {

@@ -8,7 +8,10 @@ module.exports = [
     unit: 'Doughnuts',
     rating: 4,
     completion_count: 1,
-    comment_count: 0,
+    comment_count: 1,
+    duration: 3600,
+    difficulty: 'easy',
+    private: true,
   },
   {
     user_id: 2,
@@ -19,6 +22,9 @@ module.exports = [
     unit: 'Jars',
     rating: 3.8,
     completion_count: 2,
-    comment_count: 1,
+    comment_count: 0,
+    duration: 3600,
+    difficulty: 'easy',
+    private: true,
   },
 ];

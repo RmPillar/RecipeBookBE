@@ -1,6 +1,9 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const apiRouter = require('./routes/api');
+
 const {
   handle404s,
   handleCustomErrors,

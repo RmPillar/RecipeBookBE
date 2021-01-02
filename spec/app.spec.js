@@ -797,7 +797,7 @@ describe('app', () => {
         });
       });
     });
-    describe.only('/users', () => {
+    describe('/users', () => {
       describe('/register', () => {
         describe('POST', () => {
           it('Status: 201 responds with an authentication JWT', () => {
@@ -846,6 +846,39 @@ describe('app', () => {
               .expect(400)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Bad Request!!');
+              });
+          });
+        });
+      });
+      describe.only('/login', () => {
+        describe('/POST', () => {
+          it('Status: 201 responds with an authentication JWT', () => {
+            const loginDetails = {
+              email: 'email@email.com',
+              password: 'password',
+            };
+
+            return request(app)
+              .post('/api/users/login')
+              .send(loginDetails)
+              .expect(201)
+              .then(({ body }) => {
+                expect(body.token).to.be.a('string');
+                expect(body.auth).to.equal(true);
+              });
+          });
+          it('Status: 401 responds with invalid login when incorrect login details used', () => {
+            const loginDetails = {
+              email: 'email@email.com',
+              password: 'password1',
+            };
+
+            return request(app)
+              .post('/api/users/login')
+              .send(loginDetails)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Invalid username or password');
               });
           });
         });

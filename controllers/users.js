@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 
-const { createUser } = require('../models/users');
+const { createUser, verifyUser } = require('../models/users');
 
 exports.registerUser = ({ body }, res, next) => {
   const newUser = {
@@ -11,10 +11,16 @@ exports.registerUser = ({ body }, res, next) => {
   };
 
   createUser(newUser)
-    .then((user) => {
-      res.status(201).send(user);
+    .then((auth) => {
+      res.status(201).send(auth);
     })
     .catch(next);
 };
 
-exports.loginUser = ({ body }, res, next) => {};
+exports.loginUser = ({ body }, res, next) => {
+  verifyUser(body.email, body.password)
+    .then((auth) => {
+      res.status(201).send(auth);
+    })
+    .catch(next);
+};

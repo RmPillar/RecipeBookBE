@@ -797,5 +797,59 @@ describe('app', () => {
         });
       });
     });
+    describe.only('/users', () => {
+      describe('/register', () => {
+        describe('POST', () => {
+          it('Status: 201 responds with an authentication JWT', () => {
+            const userDetails = {
+              name: 'Test',
+              username: 'Test123',
+              email: 'test@test.co.uk',
+              password: 'password',
+            };
+
+            return request(app)
+              .post('/api/users/register')
+              .send(userDetails)
+              .expect(201)
+              .then(({ body }) => {
+                expect(body.token).to.be.a('string');
+                expect(body.auth).to.equal(true);
+              });
+          });
+          it('Status: 400 responds with Bad request when trying to insert non-existant column', () => {
+            const userDetails = {
+              fullName: 'Test',
+              username: 'Test123',
+              email: 'test@test.co.uk',
+              password: 'password',
+            };
+
+            return request(app)
+              .post('/api/users/register')
+              .send(userDetails)
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Bad Request!!');
+              });
+          });
+          it('Status: 400 responds with Bad request when trying to a column is missing from recipe body', () => {
+            const userDetails = {
+              username: 'Test123',
+              email: 'test@test.co.uk',
+              password: 'password',
+            };
+
+            return request(app)
+              .post('/api/users/register')
+              .send(userDetails)
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Bad Request!!');
+              });
+          });
+        });
+      });
+    });
   });
 });

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const connection = require('../db/connection');
 
-exports.sendUser = (newUser) => {
+exports.createUser = (newUser) => {
   return connection('users')
     .insert(newUser)
     .returning('user_id')

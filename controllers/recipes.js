@@ -17,8 +17,9 @@ exports.getRecipes = ({ query }, res, next) => {
     limit = 10,
     category = '',
     user = '',
+    public = true,
   } = query;
-  fetchRecipes(sort_by, order, p, limit, category, user)
+  fetchRecipes(sort_by, order, p, limit, category, public, user)
     .then((recipes) => {
       res.status(200).send({ recipes, count: recipes.length });
     })

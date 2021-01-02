@@ -11,7 +11,7 @@ module.exports = [
     comment_count: 1,
     duration: 3600,
     difficulty: 'easy',
-    private: true,
+    public: true,
   },
   {
     user_id: 2,
@@ -25,6 +25,6 @@ module.exports = [
     comment_count: 0,
     duration: 3600,
     difficulty: 'easy',
-    private: true,
+    public: false,
   },
 ];

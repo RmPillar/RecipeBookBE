@@ -1,6 +1,6 @@
 const connection = require('../db/connection');
 
-exports.fetchRecipes = (sort_by, order, p, limit, category, user) => {
+exports.fetchRecipes = (sort_by, order, p, limit, category, public, user) => {
   return connection('recipes')
     .modify((query) => {
       if (category)
@@ -11,6 +11,7 @@ exports.fetchRecipes = (sort_by, order, p, limit, category, user) => {
             .where('category_id', category)
         );
       if (user) query.where('recipes.user_id', user);
+      if (public) query.where('recipes.public', public);
     })
     .orderBy(sort_by, order)
     .limit(limit)
@@ -45,7 +46,7 @@ exports.sendRecipes = async (newRecipe) => {
     rating: newRecipe.rating,
     duration: newRecipe.duration,
     difficulty: newRecipe.difficulty,
-    private: newRecipe.private,
+    public: newRecipe.public,
   };
   const instructionsData = newRecipe.instructions;
   const ingredientsData = newRecipe.ingredients;

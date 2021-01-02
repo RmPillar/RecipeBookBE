@@ -20,11 +20,13 @@ describe('app', () => {
   describe('/api', () => {
     describe('/recipes', () => {
       describe('GET', () => {
-        it('Status: 200 responds with all recipes in the database', () => {
+        it('Status: 200 responds with all public recipes in the database', () => {
           return request(app)
-            .get('/api/recipes')
+            .get('/api/recipes?public=true')
             .expect(200)
             .then(({ body: { recipes } }) => {
+              const public = recipes.map((recipe) => recipe.public);
+
               expect(recipes).to.be.an('array');
               expect(recipes[0]).to.include.keys(
                 'recipe_id',
@@ -39,6 +41,7 @@ describe('app', () => {
                 'comment_count',
                 'categories'
               );
+              expect(public).to.contain(true).and.not.contain(false);
               expect(recipes[0].categories).to.be.an('array');
               expect(recipes[0].categories[0]).to.include.keys(
                 'category_id',
@@ -126,7 +129,7 @@ describe('app', () => {
             rating: 5,
             duration: 3600,
             difficulty: 'easy',
-            private: true,
+            public: true,
             categories: [{ category_id: 1 }, { category_id: 3 }],
             instructions: [
               {

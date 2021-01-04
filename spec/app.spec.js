@@ -1053,7 +1053,7 @@ describe('app', () => {
         });
       });
     });
-    describe.only('/recipe-comments', () => {
+    describe('/recipe-comments', () => {
       describe('/:comment_id', () => {
         describe('DELETE', () => {
           it('Status: 204 no response when a recipe comment is deleted', () => {
@@ -1166,35 +1166,67 @@ describe('app', () => {
       describe('/:comment_id', () => {
         describe('DELETE', () => {
           it('Status: 204 no response when a instruction comment is deleted', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
             return request(app)
               .delete('/api/instruction-comments/1')
+              .set(header)
               .expect(204);
           });
           it('Status: 400 responds with Bad Request message', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
             return request(app)
               .delete('/api/instruction-comments/t')
+              .set(header)
               .expect(400)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Bad Request!!');
               });
           });
           it('Status: 404 responds with Comment Not Found message when trying to delete comment that does not exist', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
             return request(app)
               .delete('/api/instruction-comments/5000')
+              .set(header)
               .expect(404)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Comment Not Found');
               });
           });
+          it('Status: 401 responds Unauthorized Access when deleting a comment with no authenitcation token', () => {
+            return request(app)
+              .delete('/api/instruction-comments/1')
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
         });
         describe('PATCH', () => {
           it('Status: 200 responds with the updated instruction', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
             const updatedComment = {
               body:
                 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
             };
             return request(app)
               .patch('/api/instruction-comments/1')
+              .set(header)
               .send(updatedComment)
               .expect(200)
               .then(({ body: { comment } }) => {
@@ -1204,16 +1236,36 @@ describe('app', () => {
               });
           });
           it('Status: 404 responds with comment not found message', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
             const updatedComment = {
               body:
                 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
             };
             return request(app)
               .patch('/api/instruction-comments/5000')
+              .set(header)
               .send(updatedComment)
               .expect(404)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Comment Not Found');
+              });
+          });
+          it('Status: 401 responds Unauthorized Access when updating a comment with with no authenitcation token', () => {
+            const updatedComment = {
+              body:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            };
+
+            return request(app)
+              .patch('/api/instruction-comments/1')
+              .send(updatedComment)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
               });
           });
         });

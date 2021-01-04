@@ -6,10 +6,9 @@ exports.removeRecipeComment = async (recipe_comment_id, token) => {
   if (token) {
     const decodedToken = decodeToken(token);
 
-    const comment = await connection('recipe-comments')
-      .where({ recipe_comment_id })
-      .del()
-      .returning('*');
+    const comment = await connection('recipe-comments').where({
+      recipe_comment_id,
+    });
 
     if (isEmpty(comment))
       return Promise.reject({
@@ -18,11 +17,13 @@ exports.removeRecipeComment = async (recipe_comment_id, token) => {
       });
 
     if (comment[0].user_id == decodedToken.id)
-      return connection('recipes')
-        .where({
-          recipe_id: comment[0].recipe_id,
-        })
-        .decrement({ comment_count: 1 });
+      await connection('recipe-comments').where({ recipe_comment_id }).del();
+
+    return connection('recipes')
+      .where({
+        recipe_id: comment[0].recipe_id,
+      })
+      .decrement({ comment_count: 1 });
   }
   return rejectToken();
 };

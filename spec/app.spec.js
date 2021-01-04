@@ -932,7 +932,7 @@ describe('app', () => {
         });
       });
     });
-    describe.only('/ingredients', () => {
+    describe('/ingredients', () => {
       describe('/:ingredient_id', () => {
         describe('PATCH', () => {
           it('Status: 200 responds with the updated ingredient', () => {
@@ -1050,72 +1050,6 @@ describe('app', () => {
                 'recipe_count'
               );
             });
-        });
-      });
-      describe('POST', () => {
-        it('Status: 201 responds with the posted category', () => {
-          const category = {
-            slug: 'this_is_a_category',
-            name: 'This is a category',
-          };
-          return request(app)
-            .post('/api/categories')
-            .send(category)
-            .expect(201)
-            .then(({ body: { category } }) => {
-              expect(category).to.deep.include({
-                slug: 'this_is_a_category',
-                name: 'This is a category',
-              });
-            });
-        });
-        it('Status: 400 responds with Bad request when trying to insert non-existant column', () => {
-          const category = {
-            slug1: 'this_is_a_category',
-            name: 'This is a category',
-          };
-          return request(app)
-            .post('/api/categories')
-            .send(category)
-            .expect(400)
-            .then(({ body: { msg } }) => {
-              expect(msg).to.deep.equal('Bad Request!!');
-            });
-        });
-        it('Status: 400 responds with Bad request when trying to a column is missing from comment body', () => {
-          const category = {
-            slug: 'this_is_a_category',
-          };
-          return request(app)
-            .post('/api/categories')
-            .send(category)
-            .expect(400)
-            .then(({ body: { msg } }) => {
-              expect(msg).to.deep.equal('Bad Request!!');
-            });
-        });
-      });
-      describe('/:category_id', () => {
-        describe('DELETE', () => {
-          it('Status: 204 no response when category is deleted', () => {
-            return request(app).delete('/api/categories/1').expect(204);
-          });
-          it('Status: 400 responds with Bad Request message', () => {
-            return request(app)
-              .delete('/api/categories/t')
-              .expect(400)
-              .then(({ body: { msg } }) => {
-                expect(msg).to.deep.equal('Bad Request!!');
-              });
-          });
-          it('Status: 404 responds with Category Not Found message when trying to delete category that does not exist', () => {
-            return request(app)
-              .delete('/api/categories/5000')
-              .expect(404)
-              .then(({ body: { msg } }) => {
-                expect(msg).to.deep.equal('Category Not Found');
-              });
-          });
         });
       });
     });

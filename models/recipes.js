@@ -1,5 +1,6 @@
 const connection = require('../db/connection');
-const { decodeToken } = require('../utils/auth');
+const { decodeToken, rejectToken } = require('../utils/auth');
+const { isEmpty } = require('lodash');
 
 exports.fetchRecipes = (
   sort_by,
@@ -17,10 +18,7 @@ exports.fetchRecipes = (
   } else decodedToken = { id: '' };
 
   if (public === 'private' && user && user !== decodedToken.id) {
-    return Promise.reject({
-      status: 401,
-      msg: 'Unauthorized Access',
-    });
+    return rejectToken();
   } else if (public === 'private' && !user) {
     return Promise.reject({
       status: 400,
@@ -117,25 +115,35 @@ exports.sendRecipes = async (newRecipe, token) => {
 
     return { ...recipe, categories, instructions, ingredients };
   } else {
-    return Promise.reject({
-      status: 401,
-      msg: 'Unauthorized Access',
-    });
+    return rejectToken();
   }
 };
 
-exports.removeRecipe = (recipe_id) => {
-  return connection('recipes')
-    .where({ recipe_id })
-    .del()
-    .then((delCount) => {
-      if (!delCount) {
-        return Promise.reject({
-          status: 404,
-          msg: 'Recipe Not Found',
+exports.removeRecipe = async (recipe_id, token) => {
+  if (token) {
+    const decodedToken = decodeToken(token);
+    const recipe = await connection('recipes').where({ recipe_id });
+
+    if (isEmpty(recipe))
+      return Promise.reject({
+        status: 404,
+        msg: 'Recipe Not Found',
+      });
+
+    if (recipe[0].user_id == decodedToken.id) {
+      return connection('recipes')
+        .where({ recipe_id })
+        .del()
+        .then((delCount) => {
+          if (!delCount) {
+            return Promise.reject({
+              status: 404,
+              msg: 'Recipe Not Found',
+            });
+          }
         });
-      }
-    });
+    } else return rejectedToken();
+  } else return rejectToken();
 };
 
 exports.updateRecipe = (recipe_id, body) => {

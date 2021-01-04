@@ -34,6 +34,7 @@ exports.getRecipes = ({ query, headers }, res, next) => {
 
 exports.postRecipes = ({ body, headers }, res, next) => {
   const token = headers['x-access-token'];
+
   sendRecipes(body, token)
     .then((recipe) => {
       res.status(201).send({ recipe });
@@ -41,8 +42,10 @@ exports.postRecipes = ({ body, headers }, res, next) => {
     .catch(next);
 };
 
-exports.deleteRecipe = ({ params }, res, next) => {
-  removeRecipe(params.recipe_id)
+exports.deleteRecipe = ({ params, headers }, res, next) => {
+  const token = headers['x-access-token'];
+
+  removeRecipe(params.recipe_id, token)
     .then(() => {
       res.sendStatus(204);
     })

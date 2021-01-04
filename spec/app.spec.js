@@ -213,7 +213,7 @@ describe('app', () => {
             });
         });
       });
-      describe.only('POST', () => {
+      describe('POST', () => {
         it('Status: 201 responds with the posted recipe', () => {
           const header = {
             'x-access-token':
@@ -456,24 +456,49 @@ describe('app', () => {
         });
       });
       describe('/:recipe_id', () => {
-        describe('DELETE', () => {
+        describe.only('DELETE', () => {
           it('Status: 204 no response when recipe is deleted', () => {
-            return request(app).delete('/api/recipes/1').expect(204);
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+            return request(app)
+              .delete('/api/recipes/1')
+              .set(header)
+              .expect(204);
           });
           it('Status: 400 responds with Bad Request message', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
             return request(app)
               .delete('/api/recipes/t')
+              .set(header)
               .expect(400)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Bad Request!!');
               });
           });
           it('Status: 404 responds with Recipe Not Found message when trying to delete recipe that does not exist', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
             return request(app)
               .delete('/api/recipes/5000')
+              .set(header)
               .expect(404)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Recipe Not Found');
+              });
+          });
+          it('Status: 401 responds Unauthorized Access when deleting a recipe with no authenitcation token', () => {
+            return request(app)
+              .delete('/api/recipes/1')
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
               });
           });
         });

@@ -21,8 +21,13 @@ describe('app', () => {
     describe('/recipes', () => {
       describe('GET', () => {
         it('Status: 200 responds with all public recipes in the database', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
           return request(app)
-            .get('/api/recipes?public=true')
+            .get('/api/recipes')
+            .set(header)
             .expect(200)
             .then(({ body: { recipes } }) => {
               const public = recipes.map((recipe) => recipe.public);
@@ -51,9 +56,57 @@ describe('app', () => {
               );
             });
         });
-        it('Status: 200 responds with all recipes in the database sorted by ascending A-Z by default', () => {
+        it('Status: 200 responds with all private recipes in the database for the logged in user', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
+          return request(app)
+            .get('/api/recipes?public=private&user=1')
+            .set(header)
+            .expect(200)
+            .then(({ body: { recipes } }) => {
+              const public = recipes.map((recipe) => recipe.public);
+              const user = recipes.map((recipe) => recipe.user_id === 1);
+
+              expect(user).to.contain(true).and.not.contain(false);
+              expect(public).to.contain(false).and.not.contain(true);
+            });
+        });
+        it('Status: 200 responds with the public recipes for a certain user', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
+          return request(app)
+            .get('/api/recipes?user=2&public=public')
+            .set(header)
+            .expect(200)
+            .then(({ body: { recipes } }) => {
+              const public = recipes.map((recipe) => recipe.public);
+              const user = recipes.map((recipe) => recipe.user_id === 2);
+
+              expect(public).to.contain(true).and.not.contain(false);
+              expect(user).to.contain(true).and.not.contain(false);
+            });
+        });
+        it('Status: 200 responds with the public recipes when no access token is provided', () => {
           return request(app)
             .get('/api/recipes')
+            .expect(200)
+            .then(({ body: { recipes } }) => {
+              const public = recipes.map((recipe) => recipe.public);
+              expect(public).to.contain(true).and.not.contain(false);
+            });
+        });
+        it('Status: 200 responds with all recipes in the database sorted by ascending A-Z by default', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
+          return request(app)
+            .get('/api/recipes')
+            .set(header)
             .expect(200)
             .then(({ body: { recipes } }) => {
               expect(recipes).to.be.sortedBy('name', {
@@ -62,8 +115,13 @@ describe('app', () => {
             });
         });
         it('Status: 200 responds with all recipes in the database sorted by descending A-Z by user query', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
           return request(app)
             .get('/api/recipes?sort_by=name&order=desc')
+            .set(header)
             .expect(200)
             .then(({ body: { recipes } }) => {
               expect(recipes).to.be.sortedBy('name', {
@@ -72,8 +130,13 @@ describe('app', () => {
             });
         });
         it('Status: 200 responds with all recipes in the database sorted by time created by user query', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
           return request(app)
             .get('/api/recipes?sort_by=last_made')
+            .set(header)
             .expect(200)
             .then(({ body: { recipes } }) => {
               expect(recipes).to.be.sortedBy('last_made', {
@@ -82,46 +145,257 @@ describe('app', () => {
             });
         });
         it('Status: 200 responds with the first 10 recipes in the database', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
           return request(app)
             .get('/api/recipes')
+            .set(header)
             .expect(200)
             .then(({ body: { recipes } }) => {
               expect(recipes).to.have.lengthOf.lessThan(11);
             });
         });
         it('Status: 200 responds the first 10 recipes in a certain category', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
           return request(app)
-            .get('/api/recipes?category=3')
+            .get('/api/recipes?category=1')
+            .set(header)
             .expect(200)
             .then(({ body: { recipes } }) => {
               const categories = recipes[0].categories.map(
                 (category) => category.slug
               );
-              expect(categories).to.include('doughnuts');
-            });
-        });
-        it('Status: 200 responds the first 10 recipes in a certain user', () => {
-          return request(app)
-            .get('/api/recipes?user=1')
-            .expect(200)
-            .then(({ body: { recipes } }) => {
-              expect(recipes[0].user_id).to.equal(1);
+              expect(categories).to.include('sweet');
             });
         });
         it('Status: 400 responds with bad request when sort_by query has a non-existant column', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
           return request(app)
             .get('/api/recipes?sort_by=voted')
+            .set(header)
             .expect(400)
             .then(({ body: { msg } }) => {
               expect(msg).to.equal('Bad Request!!');
             });
         });
+        it('Status: 400 responds with bad request when request is for private posts but no user specified', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
+          return request(app)
+            .get('/api/recipes?public=private')
+            .set(header)
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal('Bad Request!!');
+            });
+        });
+        it('Status: 401 responds with unauthorized access request private recipes for non logged in account', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
+          return request(app)
+            .get('/api/recipes?user=2&public=private')
+            .set(header)
+            .expect(401)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal('Unauthorized Access');
+            });
+        });
       });
-      describe('POST', () => {
+      describe.only('POST', () => {
         it('Status: 201 responds with the posted recipe', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
           const recipe = {
             name: 'Doughnut Dough',
-            user_id: 1,
+            description:
+              "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
+            quantity: 20,
+            unit: 'Doughnuts',
+            rating: 5,
+            duration: 3600,
+            difficulty: 'easy',
+            public: true,
+            categories: [{ category_id: 1 }, { category_id: 3 }],
+            instructions: [
+              {
+                index: 0,
+                body:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                comment_count: 0,
+              },
+              {
+                index: 1,
+                body:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                comment_count: 0,
+              },
+              {
+                index: 2,
+                body:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                comment_count: 0,
+              },
+            ],
+            ingredients: [
+              {
+                index: 0,
+                name: 'Strong White Bread Flour',
+                quantity: 500,
+                unit: 'g',
+              },
+              {
+                index: 1,
+                name: 'Caster Sugar',
+                quantity: 60,
+                unit: 'g',
+              },
+              {
+                index: 2,
+                name: 'Dried Yeast',
+                quantity: 8,
+                unit: 'g',
+              },
+            ],
+          };
+          return request(app)
+            .post('/api/recipes')
+            .set(header)
+            .send(recipe)
+            .expect(201)
+            .then(({ body: { recipe } }) => {
+              expect(recipe).to.deep.include({
+                name: 'Doughnut Dough',
+                description:
+                  "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
+                user_id: 1,
+                quantity: '20.00',
+                unit: 'Doughnuts',
+                rating: '5.00',
+                completion_count: 0,
+                comment_count: 0,
+                categories: [
+                  { recipes_category_id: 8, category_id: 1, recipe_id: 5 },
+                  { recipes_category_id: 9, category_id: 3, recipe_id: 5 },
+                ],
+                instructions: [
+                  {
+                    instruction_id: 7,
+                    recipe_id: 5,
+                    body:
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                    index: 0,
+                    comment_count: 0,
+                  },
+                  {
+                    instruction_id: 8,
+                    recipe_id: 5,
+                    body:
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                    index: 1,
+                    comment_count: 0,
+                  },
+                  {
+                    instruction_id: 9,
+                    recipe_id: 5,
+                    body:
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                    index: 2,
+                    comment_count: 0,
+                  },
+                ],
+                ingredients: [
+                  {
+                    ingredient_id: 15,
+                    recipe_id: 5,
+                    index: 0,
+                    name: 'Strong White Bread Flour',
+                    quantity: '500.00000',
+                    unit: 'g',
+                  },
+                  {
+                    ingredient_id: 16,
+                    recipe_id: 5,
+                    index: 1,
+                    name: 'Caster Sugar',
+                    quantity: '60.00000',
+                    unit: 'g',
+                  },
+                  {
+                    ingredient_id: 17,
+                    recipe_id: 5,
+                    index: 2,
+                    name: 'Dried Yeast',
+                    quantity: '8.00000',
+                    unit: 'g',
+                  },
+                ],
+              });
+            });
+        });
+        it('Status: 400 responds with Bad request when trying to insert non-existant column', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
+          const recipe = {
+            names: 'Doughnut Dough',
+            description:
+              "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
+            quantity: 20,
+            unit: 'Doughnuts',
+            rating: 5,
+            categories: [{ category_id: 1 }, { category_id: 6 }],
+          };
+
+          return request(app)
+            .post('/api/recipes')
+            .set(header)
+            .send(recipe)
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.deep.equal('Bad Request!!');
+            });
+        });
+        it('Status: 400 responds with Bad request when trying to a column is missing from recipe body', () => {
+          const header = {
+            'x-access-token':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+          };
+          const recipe = {
+            description:
+              "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
+            author: 'Bread Ahead',
+            quantity: 20,
+            unit: 'Doughnuts',
+            rating: 5,
+          };
+
+          return request(app)
+            .post('/api/recipes')
+            .set(header)
+            .send(recipe)
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.deep.equal('Bad Request!!');
+            });
+        });
+        it('Status: 401 responds Unauthorized Access when posting a recipe with no authenitcation token', () => {
+          const recipe = {
+            name: 'Doughnut Dough',
             description:
               "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
             quantity: 20,
@@ -175,113 +449,9 @@ describe('app', () => {
           return request(app)
             .post('/api/recipes')
             .send(recipe)
-            .expect(201)
-            .then(({ body: { recipe } }) => {
-              expect(recipe).to.deep.include({
-                name: 'Doughnut Dough',
-                description:
-                  "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
-                user_id: 1,
-                quantity: '20.00',
-                unit: 'Doughnuts',
-                rating: '5.00',
-                completion_count: 0,
-                comment_count: 0,
-                categories: [
-                  { recipes_category_id: 4, category_id: 1, recipe_id: 3 },
-                  { recipes_category_id: 5, category_id: 3, recipe_id: 3 },
-                ],
-                instructions: [
-                  {
-                    instruction_id: 7,
-                    recipe_id: 3,
-                    body:
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                    index: 0,
-                    comment_count: 0,
-                  },
-                  {
-                    instruction_id: 8,
-                    recipe_id: 3,
-                    body:
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                    index: 1,
-                    comment_count: 0,
-                  },
-                  {
-                    instruction_id: 9,
-                    recipe_id: 3,
-                    body:
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                    index: 2,
-                    comment_count: 0,
-                  },
-                ],
-                ingredients: [
-                  {
-                    ingredient_id: 15,
-                    recipe_id: 3,
-                    index: 0,
-                    name: 'Strong White Bread Flour',
-                    quantity: '500.00000',
-                    unit: 'g',
-                  },
-                  {
-                    ingredient_id: 16,
-                    recipe_id: 3,
-                    index: 1,
-                    name: 'Caster Sugar',
-                    quantity: '60.00000',
-                    unit: 'g',
-                  },
-                  {
-                    ingredient_id: 17,
-                    recipe_id: 3,
-                    index: 2,
-                    name: 'Dried Yeast',
-                    quantity: '8.00000',
-                    unit: 'g',
-                  },
-                ],
-              });
-            });
-        });
-        it('Status: 400 responds with Bad request when trying to insert non-existant column', () => {
-          const recipe = {
-            names: 'Doughnut Dough',
-            description:
-              "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
-            user_id: 1,
-            quantity: 20,
-            unit: 'Doughnuts',
-            rating: 5,
-            categories: [{ category_id: 1 }, { category_id: 6 }],
-          };
-
-          return request(app)
-            .post('/api/recipes')
-            .send(recipe)
-            .expect(400)
+            .expect(401)
             .then(({ body: { msg } }) => {
-              expect(msg).to.deep.equal('Bad Request!!');
-            });
-        });
-        it('Status: 400 responds with Bad request when trying to a column is missing from recipe body', () => {
-          const recipe = {
-            description:
-              "Bread Ahead's famous doughnut recipe. A long rise allows the lemon zest to bleed out into the dough to make an amazing doughnut",
-            author: 'Bread Ahead',
-            quantity: 20,
-            unit: 'Doughnuts',
-            rating: 5,
-          };
-
-          return request(app)
-            .post('/api/recipes')
-            .send(recipe)
-            .expect(400)
-            .then(({ body: { msg } }) => {
-              expect(msg).to.deep.equal('Bad Request!!');
+              expect(msg).to.deep.equal('Unauthorized Access');
             });
         });
       });
@@ -850,7 +1020,7 @@ describe('app', () => {
           });
         });
       });
-      describe.only('/login', () => {
+      describe('/login', () => {
         describe('/POST', () => {
           it('Status: 201 responds with an authentication JWT', () => {
             const loginDetails = {

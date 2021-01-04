@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { getToken } = require('../utils/auth');
 
 const connection = require('../db/connection');
 
@@ -8,9 +8,7 @@ exports.createUser = (newUser) => {
     .insert(newUser)
     .returning('user_id')
     .then((user) => {
-      const token = jwt.sign({ id: user.username }, process.env.SECRET, {
-        expiresIn: 86400,
-      });
+      const token = getToken(user.user_id, user.username);
 
       return { auth: true, token: token };
     });
@@ -21,9 +19,7 @@ exports.verifyUser = async (email, password = '') => {
   const validPassword = bcrypt.compareSync(password, user.password);
 
   if (user && validPassword) {
-    const token = jwt.sign({ id: user.username }, process.env.SECRET, {
-      expiresIn: 86400,
-    });
+    const token = getToken(user.user_id, user.username);
     return { auth: true, token: token };
   } else {
     return Promise.reject({

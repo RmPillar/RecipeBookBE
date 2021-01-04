@@ -1,6 +1,33 @@
 const connection = require('../db/connection');
+const { decodeToken } = require('../utils/auth');
 
-exports.fetchRecipes = (sort_by, order, p, limit, category, public, user) => {
+exports.fetchRecipes = (
+  sort_by,
+  order,
+  p,
+  limit,
+  category,
+  public,
+  user,
+  token
+) => {
+  let decodedToken;
+  if (token) {
+    decodedToken = decodeToken(token);
+  } else decodedToken = { id: '' };
+
+  if (public === 'private' && user && user !== decodedToken.id) {
+    return Promise.reject({
+      status: 401,
+      msg: 'Unauthorized Access',
+    });
+  } else if (public === 'private' && !user) {
+    return Promise.reject({
+      status: 400,
+      msg: 'Bad Request!!',
+    });
+  }
+
   return connection('recipes')
     .modify((query) => {
       if (category)
@@ -10,8 +37,10 @@ exports.fetchRecipes = (sort_by, order, p, limit, category, public, user) => {
             .select('recipe_id')
             .where('category_id', category)
         );
-      if (user) query.where('recipes.user_id', user);
-      if (public) query.where('recipes.public', public);
+
+      if (user) query.where({ user_id: user });
+      if (public === 'private') query.where('recipes.public', false);
+      if (public === 'public') query.where('recipes.public', true);
     })
     .orderBy(sort_by, order)
     .limit(limit)
@@ -36,54 +65,63 @@ exports.fetchRecipes = (sort_by, order, p, limit, category, public, user) => {
     });
 };
 
-exports.sendRecipes = async (newRecipe) => {
-  const recipeData = {
-    name: newRecipe.name,
-    description: newRecipe.description,
-    user_id: newRecipe.user_id,
-    quantity: newRecipe.quantity,
-    unit: newRecipe.unit,
-    rating: newRecipe.rating,
-    duration: newRecipe.duration,
-    difficulty: newRecipe.difficulty,
-    public: newRecipe.public,
-  };
-  const instructionsData = newRecipe.instructions;
-  const ingredientsData = newRecipe.ingredients;
-  const categoriesData = newRecipe.categories;
+exports.sendRecipes = async (newRecipe, token) => {
+  if (token) {
+    const decodedToken = decodeToken(token);
 
-  const [recipe] = await connection('recipes')
-    .insert(recipeData)
-    .returning('*');
+    const recipeData = {
+      name: newRecipe.name,
+      description: newRecipe.description,
+      user_id: decodedToken.id,
+      quantity: newRecipe.quantity,
+      unit: newRecipe.unit,
+      rating: newRecipe.rating,
+      duration: newRecipe.duration,
+      difficulty: newRecipe.difficulty,
+      public: newRecipe.public,
+    };
+    const instructionsData = newRecipe.instructions;
+    const ingredientsData = newRecipe.ingredients;
+    const categoriesData = newRecipe.categories;
 
-  const recipeCategories = categoriesData.map((category) => ({
-    category_id: category.category_id,
-    recipe_id: recipe.recipe_id,
-  }));
+    const [recipe] = await connection('recipes')
+      .insert(recipeData)
+      .returning('*');
 
-  const recipeInstructions = instructionsData.map((instruction) => ({
-    recipe_id: recipe.recipe_id,
-    ...instruction,
-  }));
+    const recipeCategories = categoriesData.map((category) => ({
+      category_id: category.category_id,
+      recipe_id: recipe.recipe_id,
+    }));
 
-  const recipeIngredients = ingredientsData.map((ingredient) => ({
-    recipe_id: recipe.recipe_id,
-    ...ingredient,
-  }));
+    const recipeInstructions = instructionsData.map((instruction) => ({
+      recipe_id: recipe.recipe_id,
+      ...instruction,
+    }));
 
-  const categories = await connection('recipes_categories')
-    .insert(recipeCategories)
-    .returning('*');
+    const recipeIngredients = ingredientsData.map((ingredient) => ({
+      recipe_id: recipe.recipe_id,
+      ...ingredient,
+    }));
 
-  const instructions = await connection('instructions')
-    .insert(recipeInstructions)
-    .returning('*');
+    const categories = await connection('recipes_categories')
+      .insert(recipeCategories)
+      .returning('*');
 
-  const ingredients = await connection('ingredients')
-    .insert(recipeIngredients)
-    .returning('*');
+    const instructions = await connection('instructions')
+      .insert(recipeInstructions)
+      .returning('*');
 
-  return { ...recipe, categories, instructions, ingredients };
+    const ingredients = await connection('ingredients')
+      .insert(recipeIngredients)
+      .returning('*');
+
+    return { ...recipe, categories, instructions, ingredients };
+  } else {
+    return Promise.reject({
+      status: 401,
+      msg: 'Unauthorized Access',
+    });
+  }
 };
 
 exports.removeRecipe = (recipe_id) => {

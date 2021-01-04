@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken');
+const { isEmpty } = require('lodash');
+
 const {
   fetchRecipes,
   sendRecipes,
@@ -9,7 +12,9 @@ const {
   sendRecipeComment,
 } = require('../models/recipes');
 
-exports.getRecipes = ({ query }, res, next) => {
+exports.getRecipes = ({ query, headers }, res, next) => {
+  const token = headers['x-access-token'];
+
   const {
     sort_by = 'name',
     order = 'asc',
@@ -17,17 +22,19 @@ exports.getRecipes = ({ query }, res, next) => {
     limit = 10,
     category = '',
     user = '',
-    public = true,
+    public = 'public',
   } = query;
-  fetchRecipes(sort_by, order, p, limit, category, public, user)
+
+  fetchRecipes(sort_by, order, p, limit, category, public, user, token)
     .then((recipes) => {
       res.status(200).send({ recipes, count: recipes.length });
     })
     .catch(next);
 };
 
-exports.postRecipes = ({ body }, res, next) => {
-  sendRecipes(body)
+exports.postRecipes = ({ body, headers }, res, next) => {
+  const token = headers['x-access-token'];
+  sendRecipes(body, token)
     .then((recipe) => {
       res.status(201).send({ recipe });
     })

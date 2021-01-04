@@ -824,7 +824,7 @@ describe('app', () => {
       });
     });
     describe('/instructions', () => {
-      describe.only('/:instruction_id', () => {
+      describe('/:instruction_id', () => {
         describe('PATCH', () => {
           it('Status: 200 responds with the updated instruction', () => {
             const header = {
@@ -932,15 +932,21 @@ describe('app', () => {
         });
       });
     });
-    describe('/ingredients', () => {
+    describe.only('/ingredients', () => {
       describe('/:ingredient_id', () => {
         describe('PATCH', () => {
           it('Status: 200 responds with the updated ingredient', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
             const updatedIngredient = {
               quantity: 5,
             };
             return request(app)
               .patch('/api/ingredients/1')
+              .set(header)
               .send(updatedIngredient)
               .expect(200)
               .then(({ body: { ingredient } }) => {
@@ -948,36 +954,83 @@ describe('app', () => {
               });
           });
           it('Status: 404 responds with Ingredient not found message', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
             const updatedIngredient = {
               quantity: 5,
             };
             return request(app)
               .patch('/api/ingredients/5000')
+              .set(header)
               .send(updatedIngredient)
               .expect(404)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Ingredient Not Found');
               });
           });
+          it('Status: 401 responds Unauthorized Access when updating an ingredient with with no authenitcation token', () => {
+            const updatedIngredient = {
+              quantity: 5,
+            };
+
+            return request(app)
+              .patch('/api/ingredients/1')
+              .send(updatedIngredient)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
         });
         describe('DELETE', () => {
           it('Status: 204 no response when ingredient is deleted', () => {
-            return request(app).delete('/api/ingredients/1').expect(204);
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
+            return request(app)
+              .delete('/api/ingredients/1')
+              .set(header)
+              .expect(204);
           });
           it('Status: 400 responds with Bad Request message', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
             return request(app)
               .delete('/api/ingredients/t')
+              .set(header)
               .expect(400)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Bad Request!!');
               });
           });
           it('Status: 404 responds with Ingredient Not Found message when trying to delete ingredient that does not exist', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
             return request(app)
               .delete('/api/ingredients/5000')
+              .set(header)
               .expect(404)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Ingredient Not Found');
+              });
+          });
+          it('Status: 401 responds Unauthorized Access when updating an instruction with with no authenitcation token', () => {
+            return request(app)
+              .delete('/api/ingredients/1')
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
               });
           });
         });

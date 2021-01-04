@@ -1,30 +1,57 @@
 const connection = require('../db/connection');
+const { decodeToken, rejectToken } = require('../utils/auth');
+const { isEmpty } = require('lodash');
 
-exports.updateIngredient = (ingredient_id, body) => {
-  return connection('ingredients')
-    .where({ ingredient_id })
-    .update(body)
-    .returning('*')
-    .then((ingredient) => {
-      if (ingredient.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: 'Ingredient Not Found',
-        });
-      } else return ingredient[0];
+exports.updateIngredient = async (ingredient_id, body, token) => {
+  if (token) {
+    const decodedToken = decodeToken(token);
+    const ingredient = await connection('ingredients').where({
+      ingredient_id,
     });
+
+    if (isEmpty(ingredient))
+      return Promise.reject({
+        status: 404,
+        msg: 'Ingredient Not Found',
+      });
+
+    const recipe = await connection('recipes').where({
+      recipe_id: ingredient[0].recipe_id,
+    });
+
+    if (recipe[0].user_id == decodedToken.id) {
+      return connection('ingredients')
+        .where({ ingredient_id })
+        .update(body)
+        .returning('*')
+        .then((ingredient) => ingredient[0]);
+    }
+  }
+  return rejectToken();
 };
 
-exports.removeIngredient = (ingredient_id) => {
-  return connection('ingredients')
-    .where({ ingredient_id })
-    .del()
-    .then((delCount) => {
-      if (!delCount) {
+exports.removeIngredient = async (ingredient_id, token) => {
+  if (token) {
+    if (token) {
+      const decodedToken = decodeToken(token);
+      const ingredient = await connection('ingredients').where({
+        ingredient_id,
+      });
+
+      if (isEmpty(ingredient))
         return Promise.reject({
           status: 404,
           msg: 'Ingredient Not Found',
         });
+
+      const recipe = await connection('recipes').where({
+        recipe_id: ingredient[0].recipe_id,
+      });
+
+      if (recipe[0].user_id == decodedToken.id) {
+        return connection('ingredients').where({ ingredient_id }).del();
       }
-    });
+    }
+  }
+  return rejectToken();
 };

@@ -16,16 +16,17 @@ exports.removeInstructionComment = async (instruction_comment_id, token) => {
         msg: 'Comment Not Found',
       });
 
-    if (comment[0].user_id == decodedToken.id)
+    if (comment[0].user_id == decodedToken.id) {
       await connection('instruction-comments')
         .where({ instruction_comment_id })
         .del();
 
-    return connection('instructions')
-      .where({
-        instruction_id: comment[0].instruction_id,
-      })
-      .decrement({ comment_count: 1 });
+      return connection('instructions')
+        .where({
+          instruction_id: comment[0].instruction_id,
+        })
+        .decrement({ comment_count: 1 });
+    }
   }
   return rejectToken();
 };

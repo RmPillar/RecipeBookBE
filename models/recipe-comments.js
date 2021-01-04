@@ -16,14 +16,14 @@ exports.removeRecipeComment = async (recipe_comment_id, token) => {
         msg: 'Comment Not Found',
       });
 
-    if (comment[0].user_id == decodedToken.id)
+    if (comment[0].user_id == decodedToken.id) {
       await connection('recipe-comments').where({ recipe_comment_id }).del();
-
-    return connection('recipes')
-      .where({
-        recipe_id: comment[0].recipe_id,
-      })
-      .decrement({ comment_count: 1 });
+      return connection('recipes')
+        .where({
+          recipe_id: comment[0].recipe_id,
+        })
+        .decrement({ comment_count: 1 });
+    }
   }
   return rejectToken();
 };

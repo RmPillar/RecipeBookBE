@@ -4,10 +4,8 @@ const chai = require('chai');
 const { expect } = chai;
 
 const chaiSorted = require('chai-sorted');
-const assertArrays = require('chai-arrays');
 
 chai.use(chaiSorted);
-chai.use(assertArrays);
 
 const request = require('supertest');
 const app = require('../app');
@@ -501,6 +499,20 @@ describe('app', () => {
                 expect(msg).to.deep.equal('Unauthorized Access');
               });
           });
+          it('Status: 401 responds Unauthorized Access when deleting a recipe for non logged in account', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
+            return request(app)
+              .delete('/api/recipes/3')
+              .set(header)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
         });
         describe('PATCH', () => {
           it('Status: 200 responds with the updated recipe', () => {
@@ -540,6 +552,23 @@ describe('app', () => {
 
             return request(app)
               .patch('/api/recipes/1')
+              .send(updateRecipe)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
+          it('Status: 401 responds Unauthorized Access when updating a recipe for non logged in account', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
+            const updateRecipe = { rating: 3 };
+
+            return request(app)
+              .patch('/api/recipes/2')
+              .set(header)
               .send(updateRecipe)
               .expect(401)
               .then(({ body: { msg } }) => {
@@ -600,6 +629,20 @@ describe('app', () => {
             it('Status: 401 responds Unauthorized Access when get instructions for a private recipe with no authenitcation token', () => {
               return request(app)
                 .get('/api/recipes/3/instructions')
+                .expect(401)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Unauthorized Access');
+                });
+            });
+            it('Status: 401 responds Unauthorized Access when get instructions for a private recipe belonging to non logged in user', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
+              return request(app)
+                .get('/api/recipes/3/instructions')
+                .set(header)
                 .expect(401)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Unauthorized Access');
@@ -670,11 +713,25 @@ describe('app', () => {
                   expect(msg).to.deep.equal('Unauthorized Access');
                 });
             });
+            it('Status: 401 responds Unauthorized Access when get ingredients for a private recipe belonging to non logged in user', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
+              return request(app)
+                .get('/api/recipes/3/ingredients')
+                .set(header)
+                .expect(401)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Unauthorized Access');
+                });
+            });
           });
         });
         describe('/comments', () => {
           describe('GET', () => {
-            it('Status: 200 responds with all ingredients for the requested recipe', () => {
+            it('Status: 200 responds with all comments for the requested recipe', () => {
               const header = {
                 'x-access-token':
                   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
@@ -698,7 +755,7 @@ describe('app', () => {
                   });
                 });
             });
-            it('Status: 404 responds with Recipe Not Found message when trying to get ingredients for a recipe that does not exist', () => {
+            it('Status: 404 responds with Recipe Not Found message when trying to get comments for a recipe that does not exist', () => {
               const header = {
                 'x-access-token':
                   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
@@ -726,9 +783,23 @@ describe('app', () => {
                   expect(msg).to.deep.equal('Bad Request!!');
                 });
             });
-            it('Status: 401 responds Unauthorized Access when get ingredients for a private recipe with no authenitcation token', () => {
+            it('Status: 401 responds Unauthorized Access when trying to get comments for a private recipe with no authenitcation token', () => {
               return request(app)
                 .get('/api/recipes/3/comments')
+                .expect(401)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Unauthorized Access');
+                });
+            });
+            it('Status: 401 responds Unauthorized Access when trying to get comments for a private recipe belonging to non logged in user', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
+              return request(app)
+                .get('/api/recipes/3/comments')
+                .set(header)
                 .expect(401)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Unauthorized Access');
@@ -880,6 +951,26 @@ describe('app', () => {
                 expect(msg).to.deep.equal('Unauthorized Access');
               });
           });
+          it('Status: 401 responds Unauthorized Access when updating an instruction for non logged in account', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
+            const updatedInstruction = {
+              body:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            };
+
+            return request(app)
+              .patch('/api/instructions/5')
+              .set(header)
+              .send(updatedInstruction)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
         });
         describe('DELETE', () => {
           it('Status: 204 no response when instruction is deleted', () => {
@@ -921,9 +1012,23 @@ describe('app', () => {
                 expect(msg).to.deep.equal('Instruction Not Found');
               });
           });
-          it('Status: 401 responds Unauthorized Access when updating an instruction with with no authenitcation token', () => {
+          it('Status: 401 responds Unauthorized Access when updating an instruction with no authenitcation token', () => {
             return request(app)
               .delete('/api/instructions/1')
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
+          it('Status: 401 responds Unauthorized Access when updating an instruction for non logged in account', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
+            return request(app)
+              .delete('/api/instructions/5')
+              .set(header)
               .expect(401)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Unauthorized Access');
@@ -984,6 +1089,25 @@ describe('app', () => {
                 expect(msg).to.deep.equal('Unauthorized Access');
               });
           });
+          it('Status: 401 responds Unauthorized Access when updating an ingredient belonging to the non logged in user', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
+            const updatedIngredient = {
+              quantity: 5,
+            };
+
+            return request(app)
+              .patch('/api/ingredients/10')
+              .set(header)
+              .send(updatedIngredient)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
         });
         describe('DELETE', () => {
           it('Status: 204 no response when ingredient is deleted', () => {
@@ -1028,6 +1152,20 @@ describe('app', () => {
           it('Status: 401 responds Unauthorized Access when deleting an instruction with with no authenitcation token', () => {
             return request(app)
               .delete('/api/ingredients/1')
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
+          it('Status: 401 responds Unauthorized Access when deleting an instruction belonging to the non logged in user', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
+            return request(app)
+              .delete('/api/ingredients/10')
+              .set(header)
               .expect(401)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Unauthorized Access');
@@ -1103,6 +1241,20 @@ describe('app', () => {
                 expect(msg).to.deep.equal('Unauthorized Access');
               });
           });
+          it('Status: 401 responds Unauthorized Access when deleting a comment belonging to the non logged in user', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
+            return request(app)
+              .delete('/api/recipe-comments/4')
+              .set(header)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
         });
         describe('PATCH', () => {
           it('Status: 200 responds with the updated instruction', () => {
@@ -1153,6 +1305,26 @@ describe('app', () => {
 
             return request(app)
               .patch('/api/recipe-comments/1')
+              .send(updatedComment)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
+          it('Status: 401 responds Unauthorized Access when updating a comment belonging to the non logged in user', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
+            const updatedComment = {
+              body:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            };
+
+            return request(app)
+              .patch('/api/recipe-comments/4')
+              .set(header)
               .send(updatedComment)
               .expect(401)
               .then(({ body: { msg } }) => {
@@ -1212,6 +1384,20 @@ describe('app', () => {
                 expect(msg).to.deep.equal('Unauthorized Access');
               });
           });
+          it('Status: 401 responds Unauthorized Access when deleting a comment with no authenitcation token', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
+            return request(app)
+              .delete('/api/instruction-comments/4')
+              .set(header)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
         });
         describe('PATCH', () => {
           it('Status: 200 responds with the updated instruction', () => {
@@ -1262,6 +1448,26 @@ describe('app', () => {
 
             return request(app)
               .patch('/api/instruction-comments/1')
+              .send(updatedComment)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
+          it('Status: 401 responds Unauthorized Access when updating a comment with with no authenitcation token', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
+
+            const updatedComment = {
+              body:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            };
+
+            return request(app)
+              .patch('/api/instruction-comments/4')
+              .set(header)
               .send(updatedComment)
               .expect(401)
               .then(({ body: { msg } }) => {

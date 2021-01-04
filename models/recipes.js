@@ -142,78 +142,131 @@ exports.removeRecipe = async (recipe_id, token) => {
             });
           }
         });
-    } else return rejectedToken();
-  } else return rejectToken();
+    }
+  }
+  return rejectToken();
 };
 
-exports.updateRecipe = (recipe_id, body) => {
-  return connection('recipes')
-    .where({ recipe_id })
-    .update(body)
-    .returning('*')
-    .then((recipe) => {
-      if (recipe.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: 'Recipe Not Found',
-        });
-      } else return recipe[0];
-    });
+exports.updateRecipe = async (recipe_id, body, token) => {
+  if (token) {
+    const decodedToken = decodeToken(token);
+    const recipe = await connection('recipes').where({ recipe_id });
+
+    if (isEmpty(recipe))
+      return Promise.reject({
+        status: 404,
+        msg: 'Recipe Not Found',
+      });
+
+    if (recipe[0].user_id == decodedToken.id) {
+      return connection('recipes')
+        .where({ recipe_id })
+        .update(body)
+        .returning('*')
+        .then((recipe) => recipe[0]);
+    }
+  }
+  return rejectToken();
 };
 
-exports.fetchRecipeInstructions = (recipe_id) => {
-  return connection('instructions')
-    .where({ recipe_id })
-    .orderBy('index', 'asc')
-    .then((instructions) => {
-      if (instructions.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: 'Recipe Not Found',
-        });
-      } else return instructions;
-    });
+exports.fetchRecipeInstructions = async (recipe_id, token) => {
+  if (token) {
+    const decodedToken = decodeToken(token);
+    const recipe = await connection('recipes').where({ recipe_id });
+
+    if (isEmpty(recipe))
+      return Promise.reject({
+        status: 404,
+        msg: 'Recipe Not Found',
+      });
+
+    if (recipe[0].public === 'private' && user !== decodedToken.id)
+      return rejectToken();
+
+    if (recipe[0].user_id == decodedToken.id || recipe[0].public === 'public') {
+      return connection('instructions')
+        .where({ recipe_id })
+        .orderBy('index', 'asc');
+    }
+  }
+  return rejectToken();
 };
 
-exports.fetchRecipeIngredients = (recipe_id) => {
-  return connection('ingredients')
-    .where({ recipe_id })
-    .orderBy('index', 'asc')
-    .then((ingredients) => {
-      if (ingredients.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: 'Recipe Not Found',
-        });
-      } else return ingredients;
-    });
+exports.fetchRecipeIngredients = async (recipe_id, token) => {
+  if (token) {
+    const decodedToken = decodeToken(token);
+    const recipe = await connection('recipes').where({ recipe_id });
+
+    if (isEmpty(recipe))
+      return Promise.reject({
+        status: 404,
+        msg: 'Recipe Not Found',
+      });
+
+    if (recipe[0].public === 'private' && user !== decodedToken.id)
+      return rejectToken();
+
+    if (recipe[0].user_id == decodedToken.id || recipe[0].public === 'public') {
+      return connection('ingredients')
+        .where({ recipe_id })
+        .orderBy('index', 'asc');
+    }
+  }
+  return rejectToken();
 };
 
-exports.fetchRecipeComments = (recipe_id) => {
-  return connection('recipe-comments')
-    .where({ recipe_id })
-    .orderBy('date_posted', 'asc')
-    .then((comments) => {
-      if (comments.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: 'Recipe Not Found',
-        });
-      } else return comments;
-    });
+exports.fetchRecipeComments = async (recipe_id, token) => {
+  if (token) {
+    const decodedToken = decodeToken(token);
+    const recipe = await connection('recipes').where({ recipe_id });
+
+    if (isEmpty(recipe))
+      return Promise.reject({
+        status: 404,
+        msg: 'Recipe Not Found',
+      });
+
+    if (recipe[0].public === 'private' && user !== decodedToken.id)
+      return rejectToken();
+
+    if (recipe[0].user_id == decodedToken.id || recipe[0].public === 'public') {
+      return connection('recipe-comments')
+        .where({ recipe_id })
+        .orderBy('date_posted', 'asc');
+    }
+  }
+  return rejectToken();
 };
 
-exports.sendRecipeComment = async (recipe_id, body) => {
+exports.sendRecipeComment = async (recipe_id, body, token) => {
   const newComment = {
     recipe_id,
     ...body,
   };
 
-  const [comment] = await connection('recipe-comments')
-    .insert(newComment)
-    .returning('*');
+  if (token) {
+    const decodedToken = decodeToken(token);
+    const recipe = await connection('recipes').where({ recipe_id });
 
-  await connection('recipes').where({ recipe_id }).increment('comment_count');
+    if (isEmpty(recipe))
+      return Promise.reject({
+        status: 404,
+        msg: 'Recipe Not Found',
+      });
 
-  return comment;
+    if (recipe[0].public === 'private' && user !== decodedToken.id)
+      return rejectToken();
+
+    if (recipe[0].user_id == decodedToken.id || recipe[0].public === 'public') {
+      const [comment] = await connection('recipe-comments')
+        .insert(newComment)
+        .returning('*');
+
+      await connection('recipes')
+        .where({ recipe_id })
+        .increment('comment_count');
+      return comment;
+    }
+  }
+  return rejectToken();
 };

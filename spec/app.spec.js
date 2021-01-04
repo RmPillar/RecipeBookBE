@@ -456,7 +456,7 @@ describe('app', () => {
         });
       });
       describe('/:recipe_id', () => {
-        describe.only('DELETE', () => {
+        describe('DELETE', () => {
           it('Status: 204 no response when recipe is deleted', () => {
             const header = {
               'x-access-token':
@@ -504,9 +504,15 @@ describe('app', () => {
         });
         describe('PATCH', () => {
           it('Status: 200 responds with the updated recipe', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
             const updateRecipe = { rating: 3 };
+
             return request(app)
               .patch('/api/recipes/1')
+              .set(header)
               .send(updateRecipe)
               .expect(200)
               .then(({ body: { recipe } }) => {
@@ -514,21 +520,43 @@ describe('app', () => {
               });
           });
           it('Status: 404 responds with recipe not found message', () => {
+            const header = {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+            };
             const updateRecipe = { rating: 3 };
+
             return request(app)
               .patch('/api/recipes/5000')
+              .set(header)
               .send(updateRecipe)
               .expect(404)
               .then(({ body: { msg } }) => {
                 expect(msg).to.deep.equal('Recipe Not Found');
               });
           });
+          it('Status: 401 responds Unauthorized Access when updating a recipe with no authenitcation token', () => {
+            const updateRecipe = { rating: 3 };
+
+            return request(app)
+              .patch('/api/recipes/1')
+              .send(updateRecipe)
+              .expect(401)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.deep.equal('Unauthorized Access');
+              });
+          });
         });
         describe('/instructions', () => {
           describe('GET', () => {
             it('Status: 200 responds with all instructions for the requested recipe', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
               return request(app)
                 .get('/api/recipes/1/instructions')
+                .set(header)
                 .expect(200)
                 .then(({ body: { instructions } }) => {
                   expect(instructions).to.be.an('array');
@@ -544,19 +572,37 @@ describe('app', () => {
                 });
             });
             it('Status: 404 responds with Recipe Not Found message when trying to get instructions for a recipe that does not exist', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
               return request(app)
                 .get('/api/recipes/5000/instructions')
+                .set(header)
                 .expect(404)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Recipe Not Found');
                 });
             });
             it('Status: 400 responds with Bad Request message', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
               return request(app)
                 .get('/api/recipes/t/instructions')
+                .set(header)
                 .expect(400)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Bad Request!!');
+                });
+            });
+            it('Status: 401 responds Unauthorized Access when get instructions for a private recipe with no authenitcation token', () => {
+              return request(app)
+                .get('/api/recipes/3/instructions')
+                .expect(401)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Unauthorized Access');
                 });
             });
           });
@@ -564,8 +610,14 @@ describe('app', () => {
         describe('/ingredients', () => {
           describe('GET', () => {
             it('Status: 200 responds with all ingredients for the requested recipe', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
               return request(app)
                 .get('/api/recipes/1/ingredients')
+                .set(header)
                 .expect(200)
                 .then(({ body: { ingredients } }) => {
                   expect(ingredients).to.be.an('array');
@@ -583,19 +635,39 @@ describe('app', () => {
                 });
             });
             it('Status: 404 responds with Recipe Not Found message when trying to get ingredients for a recipe that does not exist', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
               return request(app)
                 .get('/api/recipes/5000/ingredients')
+                .set(header)
                 .expect(404)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Recipe Not Found');
                 });
             });
             it('Status: 400 responds with Bad Request message', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
               return request(app)
                 .get('/api/recipes/t/ingredients')
+                .set(header)
                 .expect(400)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Bad Request!!');
+                });
+            });
+            it('Status: 401 responds Unauthorized Access when get ingredients for a private recipe with no authenitcation token', () => {
+              return request(app)
+                .get('/api/recipes/3/ingredients')
+                .expect(401)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Unauthorized Access');
                 });
             });
           });
@@ -603,8 +675,14 @@ describe('app', () => {
         describe('/comments', () => {
           describe('GET', () => {
             it('Status: 200 responds with all ingredients for the requested recipe', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
               return request(app)
                 .get('/api/recipes/1/comments')
+                .set(header)
                 .expect(200)
                 .then(({ body: { comments } }) => {
                   expect(comments).to.be.an('array');
@@ -621,24 +699,49 @@ describe('app', () => {
                 });
             });
             it('Status: 404 responds with Recipe Not Found message when trying to get ingredients for a recipe that does not exist', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
               return request(app)
                 .get('/api/recipes/5000/comments')
+                .set(header)
                 .expect(404)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Recipe Not Found');
                 });
             });
             it('Status: 400 responds with Bad Request message', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
               return request(app)
                 .get('/api/recipes/t/comments')
+                .set(header)
                 .expect(400)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Bad Request!!');
                 });
             });
+            it('Status: 401 responds Unauthorized Access when get ingredients for a private recipe with no authenitcation token', () => {
+              return request(app)
+                .get('/api/recipes/3/comments')
+                .expect(401)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Unauthorized Access');
+                });
+            });
           });
-          describe('POST', () => {
+          describe.only('POST', () => {
             it('Status: 201 responds with the posted comment', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
               const comment = {
                 user_id: 2,
                 date_posted: null,
@@ -647,6 +750,7 @@ describe('app', () => {
               };
               return request(app)
                 .post('/api/recipes/1/comments')
+                .set(header)
                 .send(comment)
                 .expect(201)
                 .then(({ body: { comment } }) => {
@@ -658,6 +762,11 @@ describe('app', () => {
                 });
             });
             it('Status: 400 responds with Bad request when trying to insert non-existant column', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
               const comment = {
                 user: 2,
                 date_posted: null,
@@ -667,6 +776,7 @@ describe('app', () => {
 
               return request(app)
                 .post('/api/recipes/1/comments')
+                .set(header)
                 .send(comment)
                 .expect(400)
                 .then(({ body: { msg } }) => {
@@ -674,6 +784,11 @@ describe('app', () => {
                 });
             });
             it('Status: 400 responds with Bad request when trying to a column is missing from comment body', () => {
+              const header = {
+                'x-access-token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              };
+
               const comment = {
                 user: 2,
                 date_posted: null,
@@ -681,10 +796,27 @@ describe('app', () => {
 
               return request(app)
                 .post('/api/recipes/1/comments')
+                .set(header)
                 .send(comment)
                 .expect(400)
                 .then(({ body: { msg } }) => {
                   expect(msg).to.deep.equal('Bad Request!!');
+                });
+            });
+            it('Status: 401 responds Unauthorized Access when get post a comment with with no authenitcation token', () => {
+              const comment = {
+                user_id: 2,
+                date_posted: null,
+                body:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+              };
+
+              return request(app)
+                .post('/api/recipes/1/comments')
+                .send(comment)
+                .expect(401)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.deep.equal('Unauthorized Access');
                 });
             });
           });

@@ -52,40 +52,50 @@ exports.deleteRecipe = ({ params, headers }, res, next) => {
     .catch(next);
 };
 
-exports.patchRecipe = ({ params, body }, res, next) => {
-  updateRecipe(params.recipe_id, body)
+exports.patchRecipe = ({ params, body, headers }, res, next) => {
+  const token = headers['x-access-token'];
+
+  updateRecipe(params.recipe_id, body, token)
     .then((recipe) => {
       res.status(200).send({ recipe });
     })
     .catch(next);
 };
 
-exports.getRecipeInstructions = ({ params }, res, next) => {
-  fetchRecipeInstructions(params.recipe_id)
+exports.getRecipeInstructions = ({ params, headers }, res, next) => {
+  const token = headers['x-access-token'];
+
+  fetchRecipeInstructions(params.recipe_id, token)
     .then((instructions) => {
       res.status(200).send({ instructions });
     })
     .catch(next);
 };
 
-exports.getRecipeIngredients = ({ params }, res, next) => {
-  fetchRecipeIngredients(params.recipe_id)
+exports.getRecipeIngredients = ({ params, headers }, res, next) => {
+  const token = headers['x-access-token'];
+
+  fetchRecipeIngredients(params.recipe_id, token)
     .then((ingredients) => {
       res.status(200).send({ ingredients });
     })
     .catch(next);
 };
 
-exports.getRecipeComments = ({ params }, res, next) => {
-  fetchRecipeComments(params.recipe_id)
+exports.getRecipeComments = ({ params, headers }, res, next) => {
+  const token = headers['x-access-token'];
+
+  fetchRecipeComments(params.recipe_id, token)
     .then((comments) => {
       res.status(200).send({ comments });
     })
     .catch(next);
 };
 
-exports.postRecipeComment = ({ params, body }, res, next) => {
-  sendRecipeComment(params.recipe_id, body)
+exports.postRecipeComment = ({ params, body, headers }, res, next) => {
+  const token = headers['x-access-token'];
+
+  sendRecipeComment(params.recipe_id, body, token)
     .then((comment) => {
       res.status(201).send({ comment });
     })

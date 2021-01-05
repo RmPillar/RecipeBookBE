@@ -14,7 +14,7 @@ const baseConfig = {
 const customConfig = {
   production: {
     ssl: { rejectUnauthorized: false },
-    connection: `${DB_URL}?ssl=true`,
+    connection: `${DB_URL}?sslmode=require`,
   },
   development: {
     connection: {

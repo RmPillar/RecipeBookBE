@@ -21,7 +21,7 @@ describe('app', () => {
         it('Status: 200 responds with all public recipes in the database', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           return request(app)
             .get('/api/recipes')
@@ -57,7 +57,7 @@ describe('app', () => {
         it('Status: 200 responds with all private recipes in the database for the logged in user', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           return request(app)
             .get('/api/recipes?public=private&user=1')
@@ -74,7 +74,7 @@ describe('app', () => {
         it('Status: 200 responds with the public recipes for a certain user', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           return request(app)
             .get('/api/recipes?user=2&public=public')
@@ -100,7 +100,7 @@ describe('app', () => {
         it('Status: 200 responds with all recipes in the database sorted by ascending A-Z by default', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           return request(app)
             .get('/api/recipes')
@@ -115,7 +115,7 @@ describe('app', () => {
         it('Status: 200 responds with all recipes in the database sorted by descending A-Z by user query', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           return request(app)
             .get('/api/recipes?sort_by=name&order=desc')
@@ -130,7 +130,7 @@ describe('app', () => {
         it('Status: 200 responds with all recipes in the database sorted by time created by user query', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           return request(app)
             .get('/api/recipes?sort_by=last_made')
@@ -145,7 +145,7 @@ describe('app', () => {
         it('Status: 200 responds with the first 10 recipes in the database', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           return request(app)
             .get('/api/recipes')
@@ -158,7 +158,7 @@ describe('app', () => {
         it('Status: 200 responds the first 10 recipes in a certain category', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           return request(app)
             .get('/api/recipes?category=1')
@@ -174,7 +174,7 @@ describe('app', () => {
         it('Status: 400 responds with bad request when sort_by query has a non-existant column', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           return request(app)
             .get('/api/recipes?sort_by=voted')
@@ -187,7 +187,7 @@ describe('app', () => {
         it('Status: 400 responds with bad request when request is for private posts but no user specified', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           return request(app)
             .get('/api/recipes?public=private')
@@ -200,7 +200,7 @@ describe('app', () => {
         it('Status: 401 responds with unauthorized access request private recipes for non logged in account', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           return request(app)
             .get('/api/recipes?user=2&public=private')
@@ -215,7 +215,7 @@ describe('app', () => {
         it('Status: 201 responds with the posted recipe', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           const recipe = {
             name: 'Doughnut Dough',
@@ -347,7 +347,7 @@ describe('app', () => {
         it('Status: 400 responds with Bad request when trying to insert non-existant column', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           const recipe = {
             names: 'Doughnut Dough',
@@ -371,7 +371,7 @@ describe('app', () => {
         it('Status: 400 responds with Bad request when trying to a column is missing from recipe body', () => {
           const header = {
             'x-access-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
           };
           const recipe = {
             description:
@@ -458,7 +458,7 @@ describe('app', () => {
           it('Status: 204 no response when recipe is deleted', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
             return request(app)
               .delete('/api/recipes/1')
@@ -468,7 +468,7 @@ describe('app', () => {
           it('Status: 400 responds with Bad Request message', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
             return request(app)
               .delete('/api/recipes/t')
@@ -481,7 +481,7 @@ describe('app', () => {
           it('Status: 404 responds with Recipe Not Found message when trying to delete recipe that does not exist', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
             return request(app)
               .delete('/api/recipes/5000')
@@ -502,7 +502,7 @@ describe('app', () => {
           it('Status: 401 responds Unauthorized Access when deleting a recipe for non logged in account', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -518,7 +518,7 @@ describe('app', () => {
           it('Status: 200 responds with the updated recipe', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
             const updateRecipe = { rating: 3 };
 
@@ -534,7 +534,7 @@ describe('app', () => {
           it('Status: 404 responds with recipe not found message', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
             const updateRecipe = { rating: 3 };
 
@@ -561,7 +561,7 @@ describe('app', () => {
           it('Status: 401 responds Unauthorized Access when updating a recipe for non logged in account', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updateRecipe = { rating: 3 };
@@ -581,7 +581,7 @@ describe('app', () => {
             it('Status: 200 responds with all instructions for the requested recipe', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
               return request(app)
                 .get('/api/recipes/1/instructions')
@@ -603,7 +603,7 @@ describe('app', () => {
             it('Status: 404 responds with Recipe Not Found message when trying to get instructions for a recipe that does not exist', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
               return request(app)
                 .get('/api/recipes/5000/instructions')
@@ -616,7 +616,7 @@ describe('app', () => {
             it('Status: 400 responds with Bad Request message', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
               return request(app)
                 .get('/api/recipes/t/instructions')
@@ -637,7 +637,7 @@ describe('app', () => {
             it('Status: 401 responds Unauthorized Access when get instructions for a private recipe belonging to non logged in user', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               return request(app)
@@ -655,7 +655,7 @@ describe('app', () => {
             it('Status: 200 responds with all ingredients for the requested recipe', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               return request(app)
@@ -680,7 +680,7 @@ describe('app', () => {
             it('Status: 404 responds with Recipe Not Found message when trying to get ingredients for a recipe that does not exist', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               return request(app)
@@ -694,7 +694,7 @@ describe('app', () => {
             it('Status: 400 responds with Bad Request message', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               return request(app)
@@ -716,7 +716,7 @@ describe('app', () => {
             it('Status: 401 responds Unauthorized Access when get ingredients for a private recipe belonging to non logged in user', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               return request(app)
@@ -734,7 +734,7 @@ describe('app', () => {
             it('Status: 200 responds with all comments for the requested recipe', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               return request(app)
@@ -758,7 +758,7 @@ describe('app', () => {
             it('Status: 404 responds with Recipe Not Found message when trying to get comments for a recipe that does not exist', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               return request(app)
@@ -772,7 +772,7 @@ describe('app', () => {
             it('Status: 400 responds with Bad Request message', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               return request(app)
@@ -794,7 +794,7 @@ describe('app', () => {
             it('Status: 401 responds Unauthorized Access when trying to get comments for a private recipe belonging to non logged in user', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               return request(app)
@@ -810,7 +810,7 @@ describe('app', () => {
             it('Status: 201 responds with the posted comment', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               const comment = {
@@ -835,7 +835,7 @@ describe('app', () => {
             it('Status: 400 responds with Bad request when trying to insert non-existant column', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               const comment = {
@@ -857,7 +857,7 @@ describe('app', () => {
             it('Status: 400 responds with Bad request when trying to a column is missing from comment body', () => {
               const header = {
                 'x-access-token':
-                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
               };
 
               const comment = {
@@ -900,7 +900,7 @@ describe('app', () => {
           it('Status: 200 responds with the updated instruction', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedInstruction = {
@@ -921,7 +921,7 @@ describe('app', () => {
           it('Status: 404 responds with ingredient not found message', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedInstruction = {
@@ -954,7 +954,7 @@ describe('app', () => {
           it('Status: 401 responds Unauthorized Access when updating an instruction for non logged in account', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedInstruction = {
@@ -976,7 +976,7 @@ describe('app', () => {
           it('Status: 204 no response when instruction is deleted', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -987,7 +987,7 @@ describe('app', () => {
           it('Status: 400 responds with Bad Request message', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1001,7 +1001,7 @@ describe('app', () => {
           it('Status: 404 responds with Instruction Not Found message when trying to delete instruction that does not exist', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1023,7 +1023,7 @@ describe('app', () => {
           it('Status: 401 responds Unauthorized Access when updating an instruction for non logged in account', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1043,7 +1043,7 @@ describe('app', () => {
           it('Status: 200 responds with the updated ingredient', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedIngredient = {
@@ -1061,7 +1061,7 @@ describe('app', () => {
           it('Status: 404 responds with Ingredient not found message', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedIngredient = {
@@ -1092,7 +1092,7 @@ describe('app', () => {
           it('Status: 401 responds Unauthorized Access when updating an ingredient belonging to the non logged in user', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedIngredient = {
@@ -1113,7 +1113,7 @@ describe('app', () => {
           it('Status: 204 no response when ingredient is deleted', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1124,7 +1124,7 @@ describe('app', () => {
           it('Status: 400 responds with Bad Request message', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1138,7 +1138,7 @@ describe('app', () => {
           it('Status: 404 responds with Ingredient Not Found message when trying to delete ingredient that does not exist', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1160,7 +1160,7 @@ describe('app', () => {
           it('Status: 401 responds Unauthorized Access when deleting an instruction belonging to the non logged in user', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1197,7 +1197,7 @@ describe('app', () => {
           it('Status: 204 no response when a recipe comment is deleted', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1208,7 +1208,7 @@ describe('app', () => {
           it('Status: 400 responds with Bad Request message', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1222,7 +1222,7 @@ describe('app', () => {
           it('Status: 404 responds with Comment Not Found message when trying to delete comment that does not exist', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1244,7 +1244,7 @@ describe('app', () => {
           it('Status: 401 responds Unauthorized Access when deleting a comment belonging to the non logged in user', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1260,7 +1260,7 @@ describe('app', () => {
           it('Status: 200 responds with the updated instruction', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedComment = {
@@ -1281,7 +1281,7 @@ describe('app', () => {
           it('Status: 404 responds with comment not found message', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedComment = {
@@ -1314,7 +1314,7 @@ describe('app', () => {
           it('Status: 401 responds Unauthorized Access when updating a comment belonging to the non logged in user', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedComment = {
@@ -1340,7 +1340,7 @@ describe('app', () => {
           it('Status: 204 no response when a instruction comment is deleted', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1351,7 +1351,7 @@ describe('app', () => {
           it('Status: 400 responds with Bad Request message', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1365,7 +1365,7 @@ describe('app', () => {
           it('Status: 404 responds with Comment Not Found message when trying to delete comment that does not exist', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1387,7 +1387,7 @@ describe('app', () => {
           it('Status: 401 responds Unauthorized Access when deleting a comment with no authenitcation token', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             return request(app)
@@ -1403,7 +1403,7 @@ describe('app', () => {
           it('Status: 200 responds with the updated instruction', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedComment = {
@@ -1424,7 +1424,7 @@ describe('app', () => {
           it('Status: 404 responds with comment not found message', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedComment = {
@@ -1457,7 +1457,7 @@ describe('app', () => {
           it('Status: 401 responds Unauthorized Access when updating a comment with with no authenitcation token', () => {
             const header = {
               'x-access-token':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWF0IjoxNTE2MjM5MDIyfQ.zWaK2bd94faOWkmPwgyeGNcNLPThWXEQiz0oIAMhVyc',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJtUGlsbGFyIiwiaWQiOjF9.2QJMxQfBGEqB9Cwsr5WCDu3btdEnxTxptUPRo8RpwNw',
             };
 
             const updatedComment = {

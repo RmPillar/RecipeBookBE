@@ -17,7 +17,7 @@ exports.fetchRecipes = (
     decodedToken = decodeToken(token);
   } else decodedToken = { id: '' };
 
-  if (public === 'private' && user && user !== decodedToken.id) {
+  if (public === 'private' && user && user != decodedToken.id) {
     return rejectToken();
   } else if (public === 'private' && !user) {
     return Promise.reject({

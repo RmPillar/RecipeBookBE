@@ -3,6 +3,7 @@ const ENV = process.env.NODE_ENV || 'development';
 
 const baseConfig = {
   client: 'pg',
+  ssl: { rejectUnauthorized: false },
   migrations: {
     directory: './db/migrations',
   },

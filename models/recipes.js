@@ -13,6 +13,7 @@ exports.fetchRecipes = (
   token
 ) => {
   let decodedToken;
+  console.log(token);
   if (token) {
     decodedToken = decodeToken(token);
   } else decodedToken = { id: '' };

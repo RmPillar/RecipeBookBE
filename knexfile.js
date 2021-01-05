@@ -3,7 +3,6 @@ const ENV = process.env.NODE_ENV || 'development';
 
 const baseConfig = {
   client: 'pg',
-  ssl: { rejectUnauthorized: false },
   migrations: {
     directory: './db/migrations',
   },
@@ -14,6 +13,7 @@ const baseConfig = {
 
 const customConfig = {
   production: {
+    ssl: { rejectUnauthorized: false },
     connection: `${DB_URL}?ssl=true`,
   },
   development: {

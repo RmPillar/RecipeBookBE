@@ -17,7 +17,7 @@ exports.handle422s = (err, req, res, next) => {
 };
 
 exports.handle500s = (err, req, res, next) => {
-  res.status(500).send({ msg: err });
+  res.status(500).send({ msg: err.msg });
 };
 
 exports.handle404s = (req, res, next) => {

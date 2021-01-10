@@ -6,9 +6,6 @@ const dbConfig =
     ? {
         client: 'pg',
         connection: process.env.DATABASE_URL,
-        extra: {
-          ssl: true,
-        },
       }
     : require('../knexfile');
 

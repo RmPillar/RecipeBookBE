@@ -13,7 +13,12 @@ const baseConfig = {
 
 const customConfig = {
   production: {
-    connection: `${DB_URL}`,
+    connection: `${DB_URL}?ssl=true`,
+    ssl: true,
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: { require: true },
+    },
   },
   development: {
     connection: {

@@ -6,6 +6,7 @@ const dbConfig =
     ? {
         client: 'pg',
         connection: process.env.DATABASE_URL,
+        connectTimeout: 90000,
       }
     : require('../knexfile');
 

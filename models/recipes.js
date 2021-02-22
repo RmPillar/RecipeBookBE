@@ -13,7 +13,6 @@ exports.fetchRecipes = (
   token
 ) => {
   let decodedToken;
-  console.log(token);
   if (token) {
     decodedToken = decodeToken(token);
   } else decodedToken = { id: '' };
@@ -62,6 +61,16 @@ exports.fetchRecipes = (
         });
       });
     });
+};
+
+exports.fetchRecipeById = (recipe_id, token) => {
+  const public = this.getRecipePublic(recipe_id);
+
+  if (!token || !public) return rejectToken();
+
+  return connection('recipes')
+    .where({ recipe_id })
+    .then((data) => data[0]);
 };
 
 exports.sendRecipes = async (newRecipe, token) => {
@@ -171,72 +180,74 @@ exports.updateRecipe = async (recipe_id, body, token) => {
 };
 
 exports.fetchRecipeInstructions = async (recipe_id, token) => {
-  if (token) {
-    const decodedToken = decodeToken(token);
-    const recipe = await connection('recipes').where({ recipe_id });
+  const public = await this.getRecipePublic(recipe_id);
 
-    if (isEmpty(recipe))
-      return Promise.reject({
-        status: 404,
-        msg: 'Recipe Not Found',
-      });
+  if (isEmpty(token) || !public) return rejectToken();
 
-    if (recipe[0].public === 'private' && user !== decodedToken.id)
-      return rejectToken();
+  const decodedToken = decodeToken(token);
 
-    if (recipe[0].user_id == decodedToken.id || recipe[0].public === 'public') {
-      return connection('instructions')
-        .where({ recipe_id })
-        .orderBy('index', 'asc');
-    }
+  const recipe = await connection('recipes').where({ recipe_id });
+
+  if (isEmpty(recipe))
+    return Promise.reject({
+      status: 404,
+      msg: 'Recipe Not Found',
+    });
+
+  if (!public && recipe[0].user_id !== decodedToken.id) return rejectToken();
+
+  if (recipe[0].user_id == decodedToken.id || public) {
+    return connection('instructions')
+      .where({ recipe_id })
+      .orderBy('index', 'asc');
   }
-  return rejectToken();
 };
 
 exports.fetchRecipeIngredients = async (recipe_id, token) => {
-  if (token) {
-    const decodedToken = decodeToken(token);
-    const recipe = await connection('recipes').where({ recipe_id });
+  const public = await this.getRecipePublic(recipe_id);
 
-    if (isEmpty(recipe))
-      return Promise.reject({
-        status: 404,
-        msg: 'Recipe Not Found',
-      });
+  if (isEmpty(token) || !public) return rejectToken();
 
-    if (recipe[0].public === 'private' && user !== decodedToken.id)
-      return rejectToken();
+  const decodedToken = decodeToken(token);
+  const recipe = await connection('recipes').where({ recipe_id });
 
-    if (recipe[0].user_id == decodedToken.id || recipe[0].public === 'public') {
-      return connection('ingredients')
-        .where({ recipe_id })
-        .orderBy('index', 'asc');
-    }
+  if (isEmpty(recipe))
+    return Promise.reject({
+      status: 404,
+      msg: 'Recipe Not Found',
+    });
+
+  if (!public && recipe[0].user_id !== decodedToken.id) return rejectToken();
+
+  if (recipe[0].user_id == decodedToken.id || public) {
+    return connection('ingredients')
+      .where({ recipe_id })
+      .orderBy('index', 'asc');
   }
-  return rejectToken();
 };
 
 exports.fetchRecipeComments = async (recipe_id, token) => {
-  if (token) {
-    const decodedToken = decodeToken(token);
-    const recipe = await connection('recipes').where({ recipe_id });
+  const public = this.getRecipePublic(recipe_id);
 
-    if (isEmpty(recipe))
-      return Promise.reject({
-        status: 404,
-        msg: 'Recipe Not Found',
-      });
+  if (token || public) return rejectToken();
 
-    if (recipe[0].public === 'private' && user !== decodedToken.id)
-      return rejectToken();
+  const decodedToken = decodeToken(token);
+  const recipe = await connection('recipes').where({ recipe_id });
 
-    if (recipe[0].user_id == decodedToken.id || recipe[0].public === 'public') {
-      return connection('recipe-comments')
-        .where({ recipe_id })
-        .orderBy('date_posted', 'asc');
-    }
+  if (isEmpty(recipe))
+    return Promise.reject({
+      status: 404,
+      msg: 'Recipe Not Found',
+    });
+
+  if (recipe[0].public && recipe[0].user_id !== decodedToken.id)
+    return rejectToken();
+
+  if (recipe[0].user_id == decodedToken.id || recipe[0].public) {
+    return connection('recipe-comments')
+      .where({ recipe_id })
+      .orderBy('date_posted', 'asc');
   }
-  return rejectToken();
 };
 
 exports.sendRecipeComment = async (recipe_id, body, token) => {
@@ -255,10 +266,10 @@ exports.sendRecipeComment = async (recipe_id, body, token) => {
         msg: 'Recipe Not Found',
       });
 
-    if (recipe[0].public === 'private' && user !== decodedToken.id)
+    if (!recipe[0].public && recipe[0].user_id !== decodedToken.id)
       return rejectToken();
 
-    if (recipe[0].user_id == decodedToken.id || recipe[0].public === 'public') {
+    if (recipe[0].user_id == decodedToken.id || recipe[0].public) {
       const [comment] = await connection('recipe-comments')
         .insert(newComment)
         .returning('*');
@@ -270,4 +281,10 @@ exports.sendRecipeComment = async (recipe_id, body, token) => {
     }
   }
   return rejectToken();
+};
+
+exports.getRecipePublic = (recipe_id) => {
+  return connection('recipes')
+    .where({ recipe_id })
+    .then((data) => data[0].public);
 };

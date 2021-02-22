@@ -27,4 +27,16 @@ module.exports = [
     category_id: 3,
     recipe_id: 4,
   },
+  {
+    category_id: 1,
+    recipe_id: 5,
+  },
+  {
+    category_id: 1,
+    recipe_id: 6,
+  },
+  {
+    category_id: 1,
+    recipe_id: 7,
+  },
 ];

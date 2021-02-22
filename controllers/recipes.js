@@ -3,6 +3,7 @@ const { isEmpty } = require('lodash');
 
 const {
   fetchRecipes,
+  fetchRecipeById,
   sendRecipes,
   removeRecipe,
   updateRecipe,
@@ -28,6 +29,16 @@ exports.getRecipes = ({ query, headers }, res, next) => {
   fetchRecipes(sort_by, order, p, limit, category, public, user, token)
     .then((recipes) => {
       res.status(200).send({ recipes, count: recipes.length });
+    })
+    .catch(next);
+};
+
+exports.getRecipeById = ({ params, headers }, res, next) => {
+  const token = headers['x-access-token'];
+
+  fetchRecipeById(params.recipe_id, token)
+    .then((recipe) => {
+      res.status(201).send(recipe[0]);
     })
     .catch(next);
 };

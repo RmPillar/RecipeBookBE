@@ -2,6 +2,7 @@ const recipeRouter = require('express').Router();
 const {
   getRecipes,
   postRecipes,
+  getRecipeById,
   deleteRecipe,
   patchRecipe,
   getRecipeInstructions,
@@ -12,7 +13,11 @@ const {
 
 recipeRouter.route('/').get(getRecipes).post(postRecipes);
 
-recipeRouter.route('/:recipe_id').delete(deleteRecipe).patch(patchRecipe);
+recipeRouter
+  .route('/:recipe_id')
+  .get(getRecipeById)
+  .delete(deleteRecipe)
+  .patch(patchRecipe);
 
 recipeRouter.route('/:recipe_id/instructions').get(getRecipeInstructions);
 

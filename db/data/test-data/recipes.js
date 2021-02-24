@@ -3,7 +3,7 @@ module.exports = [
     user_id: 1,
     name: 'Doughnut Dough',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      "Bread Ahead Bakery's famous doughnut dough reipce. The key is to take your time and allow the lemon zest to bleed out into the dough",
     quantity: 12,
     unit: 'Doughnuts',
     rating: 4,
@@ -16,8 +16,7 @@ module.exports = [
   {
     user_id: 2,
     name: 'Lemon Curd',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    description: 'A simple and delicious recipe for Lemon Curd',
     quantity: 2,
     unit: 'Jars',
     rating: 3.8,

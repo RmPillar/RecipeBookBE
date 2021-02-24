@@ -66,11 +66,10 @@ exports.fetchRecipes = (
 exports.fetchRecipeById = (recipe_id, token) => {
   const public = this.getRecipePublic(recipe_id);
 
-  if (!token || !public) return rejectToken();
+  if (!token && !public) return rejectToken();
 
-  return connection('recipes')
-    .where({ recipe_id })
-    .then((data) => data[0]);
+  return connection('recipes').where({ recipe_id });
+  // .then((data) => data[0]);
 };
 
 exports.sendRecipes = async (newRecipe, token) => {
@@ -182,7 +181,7 @@ exports.updateRecipe = async (recipe_id, body, token) => {
 exports.fetchRecipeInstructions = async (recipe_id, token) => {
   const public = await this.getRecipePublic(recipe_id);
 
-  if (isEmpty(token) || !public) return rejectToken();
+  if (isEmpty(token) && !public) return rejectToken();
 
   const decodedToken = decodeToken(token);
 
@@ -206,7 +205,7 @@ exports.fetchRecipeInstructions = async (recipe_id, token) => {
 exports.fetchRecipeIngredients = async (recipe_id, token) => {
   const public = await this.getRecipePublic(recipe_id);
 
-  if (isEmpty(token) || !public) return rejectToken();
+  if (isEmpty(token) && !public) return rejectToken();
 
   const decodedToken = decodeToken(token);
   const recipe = await connection('recipes').where({ recipe_id });
@@ -229,8 +228,6 @@ exports.fetchRecipeIngredients = async (recipe_id, token) => {
 exports.fetchRecipeComments = async (recipe_id, token) => {
   const public = this.getRecipePublic(recipe_id);
 
-  if (token || public) return rejectToken();
-
   const decodedToken = decodeToken(token);
   const recipe = await connection('recipes').where({ recipe_id });
 
@@ -240,10 +237,9 @@ exports.fetchRecipeComments = async (recipe_id, token) => {
       msg: 'Recipe Not Found',
     });
 
-  if (recipe[0].public && recipe[0].user_id !== decodedToken.id)
-    return rejectToken();
+  if (public && recipe[0].user_id !== decodedToken.id) return rejectToken();
 
-  if (recipe[0].user_id == decodedToken.id || recipe[0].public) {
+  if (recipe[0].user_id == decodedToken.id || public) {
     return connection('recipe-comments')
       .where({ recipe_id })
       .orderBy('date_posted', 'asc');

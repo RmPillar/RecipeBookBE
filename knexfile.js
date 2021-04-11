@@ -9,6 +9,12 @@ const baseConfig = {
   seeds: {
     directory: './db/seeds',
   },
+  ssl: true,
+  extra: {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
 };
 
 const customConfig = {

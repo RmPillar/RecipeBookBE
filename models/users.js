@@ -30,6 +30,7 @@ exports.verifyUser = async (email, password = '') => {
 
   if (user && validPassword) {
     const token = getToken(user.user_id, user.username);
+    console.log(token);
     return { auth: true, token: token };
   } else {
     return Promise.reject({

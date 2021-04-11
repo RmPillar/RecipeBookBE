@@ -180,11 +180,6 @@ exports.updateRecipe = async (recipe_id, body, token) => {
 
 exports.fetchRecipeInstructions = async (recipe_id, token) => {
   const public = await this.getRecipePublic(recipe_id);
-
-  if (isEmpty(token) && !public) return rejectToken();
-
-  const decodedToken = decodeToken(token);
-
   const recipe = await connection('recipes').where({ recipe_id });
 
   if (isEmpty(recipe))
@@ -193,21 +188,24 @@ exports.fetchRecipeInstructions = async (recipe_id, token) => {
       msg: 'Recipe Not Found',
     });
 
-  if (!public && recipe[0].user_id !== decodedToken.id) return rejectToken();
-
-  if (recipe[0].user_id == decodedToken.id || public) {
+  if (public) {
     return connection('instructions')
       .where({ recipe_id })
       .orderBy('index', 'asc');
+  } else {
+    if (isEmpty(token)) return rejectToken();
+    const decodedToken = decodeToken(token);
+
+    if (recipe[0].user_id == decodedToken.id) {
+      return connection('instructions')
+        .where({ recipe_id })
+        .orderBy('index', 'asc');
+    } else return rejectToken();
   }
 };
 
 exports.fetchRecipeIngredients = async (recipe_id, token) => {
   const public = await this.getRecipePublic(recipe_id);
-
-  if (isEmpty(token) && !public) return rejectToken();
-
-  const decodedToken = decodeToken(token);
   const recipe = await connection('recipes').where({ recipe_id });
 
   if (isEmpty(recipe))
@@ -216,12 +214,19 @@ exports.fetchRecipeIngredients = async (recipe_id, token) => {
       msg: 'Recipe Not Found',
     });
 
-  if (!public && recipe[0].user_id !== decodedToken.id) return rejectToken();
-
-  if (recipe[0].user_id == decodedToken.id || public) {
+  if (public) {
     return connection('ingredients')
       .where({ recipe_id })
       .orderBy('index', 'asc');
+  } else {
+    if (isEmpty(token)) return rejectToken();
+    const decodedToken = decodeToken(token);
+
+    if (recipe[0].user_id == decodedToken.id) {
+      return connection('ingredients')
+        .where({ recipe_id })
+        .orderBy('index', 'asc');
+    } else return rejectToken();
   }
 };
 

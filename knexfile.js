@@ -1,4 +1,3 @@
-const { DB_URL } = process.env;
 const ENV = process.env.NODE_ENV || 'production';
 
 const baseConfig = {
@@ -14,10 +13,8 @@ const baseConfig = {
 const customConfig = {
   production: {
     connection: {
-      url: DB_URL,
+      connectionString: process.env.DATABASE_URL,
       ssl: { rejectUnauthorized: false },
-      user: 'ydaknzcbiyjkdi',
-      password: 'dcbjufc4mr2jii',
     },
   },
   development: {

@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const privateKey = process.env.SECRET;
 
-exports.getToken = (userID, username) => {
-  const payload = { user_id: userID, username: username };
+exports.getToken = (user_id, username, password) => {
+  const payload = { user_id, username, password };
   return jwt.sign(payload, privateKey, {
     algorithm: 'HS256',
     expiresIn: 86400,

@@ -13,7 +13,12 @@ const baseConfig = {
 
 const customConfig = {
   production: {
+<<<<<<< HEAD
     connection: `${DB_URL}`,
+=======
+    connection: `${DB_URL}?ssl=true`,
+    sslmode: 'require',
+>>>>>>> develop
   },
   development: {
     connection: {

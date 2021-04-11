@@ -14,8 +14,8 @@ const baseConfig = {
 const customConfig = {
   production: {
     connection: {
-      ssl: true,
       url: DB_URL,
+      ssl: { rejectUnauthorized: false },
       user: 'ydaknzcbiyjkdi',
       password: 'dcbjufc4mr2jii',
     },
